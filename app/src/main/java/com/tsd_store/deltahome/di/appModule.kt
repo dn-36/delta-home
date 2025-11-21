@@ -1,5 +1,7 @@
 package com.tsd_store.deltahome.di
 
+import com.tsd_store.deltahome.data.remote.SmartHomeJsonFakeBackend
+import com.tsd_store.deltahome.datasource.SmartHomeJsonDataSource
 import com.tsd_store.deltahome.domain.DeviceRepositoryApi
 import com.tsd_store.deltahome.domain.model.Device
 import com.tsd_store.deltahome.domain.model.DeviceKind
@@ -10,6 +12,7 @@ import com.tsd_store.deltahome.domain.model.Room
 import com.tsd_store.deltahome.domain.model.SensorDevice
 import com.tsd_store.deltahome.domain.model.SensorType
 import com.tsd_store.deltahome.feature.home.viewmodel.HomeViewModel
+import com.tsd_store.deltahome.repository.DeviceRepositoryImpl
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import java.util.UUID
@@ -17,9 +20,13 @@ import java.util.UUID
 val appModule = module {
 
 
-    single<DeviceRepositoryApi> {
-        FakeDeviceRepositoryImpl() as DeviceRepositoryApi
-    }
+    single { SmartHomeJsonFakeBackend() }
+
+    // DataSource
+    single { SmartHomeJsonDataSource(get()) }
+
+    // Repository
+    single<DeviceRepositoryApi> { DeviceRepositoryImpl(get()) }
 
         viewModel {
             HomeViewModel(
@@ -28,8 +35,9 @@ val appModule = module {
         }
 
 
-}
 
+}
+/*
 class FakeDeviceRepositoryImpl : DeviceRepositoryApi {
 
     private val rooms = mutableListOf(
@@ -193,4 +201,4 @@ class FakeDeviceRepositoryImpl : DeviceRepositoryApi {
         devices[index] = updated
         return updated
     }
-}
+}*/

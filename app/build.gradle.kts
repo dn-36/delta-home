@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    id("org.jetbrains.kotlin.plugin.serialization") version "2.1.10"
+
 }
 
 android {
@@ -57,7 +59,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("androidx.compose.material:material")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
 
     val voyager = "1.1.0-beta02"
     implementation("cafe.adriel.voyager:voyager-navigator:$voyager")
