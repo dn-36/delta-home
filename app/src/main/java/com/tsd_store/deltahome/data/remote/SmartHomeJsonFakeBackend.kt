@@ -10,6 +10,7 @@ import com.tsd_store.deltahome.domain.model.SensorType
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 
+/*
 class SmartHomeJsonFakeBackend(
     private val json: Json = defaultJson
 ) {
@@ -101,4 +102,4 @@ class SmartHomeJsonFakeBackend(
     }
 
 }
-
+*/

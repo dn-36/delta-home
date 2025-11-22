@@ -1,4 +1,4 @@
-package com.tsd_store.deltahome.datasource.mappers
+package com.tsd_store.deltahome.repository.mappers
 
 import com.tsd_store.deltahome.data.remote.models.DeviceDto
 import com.tsd_store.deltahome.domain.model.Device
@@ -6,43 +6,41 @@ import com.tsd_store.deltahome.domain.model.KettleDevice
 import com.tsd_store.deltahome.domain.model.LampDevice
 import com.tsd_store.deltahome.domain.model.LockDevice
 import com.tsd_store.deltahome.domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.model.SensorType
 
 
-fun Device.toDto(): DeviceDto = when (this) {
-    is SensorDevice -> DeviceDto(
+fun DeviceDto.toDomain(): Device = when (type.lowercase()) {
+    "sensor" -> SensorDevice(
         id = id,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "sensor",
-        sensorType = type.name,
-        value = value,
-        isAlarm = isAlarm
+        type = SensorType.valueOf(sensorType ?: SensorType.TEMPERATURE.name),
+        value = value.orEmpty(),
+        isAlarm = isAlarm ?: false
     )
-    is LampDevice -> DeviceDto(
+    "lamp" -> LampDevice(
         id = id,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "lamp",
-        isOn = isOn,
-        brightness = brightness
+        isOn = isOn ?: false,
+        brightness = brightness ?: 0
     )
-    is KettleDevice -> DeviceDto(
+    "kettle" -> KettleDevice(
         id = id,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "kettle",
-        isOn = isOn,
-        targetTemperature = targetTemperature
+        isOn = isOn ?: false,
+        targetTemperature = targetTemperature ?: 90
     )
-    is LockDevice -> DeviceDto(
+    "lock" -> LockDevice(
         id = id,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "lock",
-        isLocked = isLocked
+        isLocked = isLocked ?: true
     )
+    else -> error("Unknown device type: $type")
 }

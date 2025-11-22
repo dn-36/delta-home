@@ -1,8 +1,8 @@
 package com.tsd_store.deltahome.di
 
-import com.tsd_store.deltahome.data.remote.SmartHomeJsonFakeBackend
+//import com.tsd_store.deltahome.data.remote.SmartHomeJsonFakeBackend
 import com.tsd_store.deltahome.data.remote.SmartHomeRemoteDataSource
-import com.tsd_store.deltahome.datasource.SmartHomeJsonDataSource
+//import com.tsd_store.deltahome.datasource.SmartHomeJsonDataSource
 import com.tsd_store.deltahome.domain.DeviceRepositoryApi
 import com.tsd_store.deltahome.domain.SmartHomeSyncApi
 import com.tsd_store.deltahome.domain.model.Device
