@@ -64,6 +64,7 @@ dependencies {
     val voyager = "1.1.0-beta02"
     implementation("cafe.adriel.voyager:voyager-navigator:$voyager")
     implementation("cafe.adriel.voyager:voyager-transitions:$voyager")
+    implementation("com.pusher:pusher-java-client:2.2.1")
 
     val ktor = "3.0.0"
     implementation("io.ktor:ktor-client-core:$ktor")

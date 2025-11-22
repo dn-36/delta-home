@@ -2,15 +2,13 @@ package com.tsd_store.deltahome.repository
 
 import com.tsd_store.deltahome.common.domain.models.ResultDomain
 import com.tsd_store.deltahome.common.domain.toResultDomain
+import com.tsd_store.deltahome.common.network.NetworkError
 import com.tsd_store.deltahome.common.network.ResultNetwork
-import com.tsd_store.deltahome.common.network.asEmptyDataResult
-import com.tsd_store.deltahome.common.network.map
-import com.tsd_store.deltahome.common.network.onError
-import com.tsd_store.deltahome.data.remote.models.DeviceDto
-import com.tsd_store.deltahome.data.remote.models.RoomDto
-import com.tsd_store.deltahome.datasource.SmartHomeJsonDataSource
+import com.tsd_store.deltahome.data.remote.SmartHomeRemoteDataSource
+import com.tsd_store.deltahome.data.remote.models.SmartHomeSnapshotDto
 import com.tsd_store.deltahome.datasource.mappers.toDomain
 import com.tsd_store.deltahome.domain.DeviceRepositoryApi
+import com.tsd_store.deltahome.domain.SmartHomeSyncApi
 import com.tsd_store.deltahome.domain.model.Device
 import com.tsd_store.deltahome.domain.model.DeviceKind
 import com.tsd_store.deltahome.domain.model.KettleDevice
@@ -19,295 +17,301 @@ import com.tsd_store.deltahome.domain.model.LockDevice
 import com.tsd_store.deltahome.domain.model.Room
 import com.tsd_store.deltahome.domain.model.SensorDevice
 import com.tsd_store.deltahome.domain.model.SensorType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.UUID
 
 
 class DeviceRepositoryImpl(
-    private val dataSource: SmartHomeJsonDataSource
+    private val remote: SmartHomeRemoteDataSource,
+    private val syncApi: SmartHomeSyncApi
 ) : DeviceRepositoryApi {
 
-    // --- Rooms ---
+    // --- локальный кеш состояния ---
+    private var roomsCache: List<Room> = emptyList()
+    private var devicesCache: List<Device> = emptyList()
+
+    private val mutex = Mutex()
+
+    // -------------------------------------------------------------------------
+    // ВСПОМОГАТЕЛЬНО: загрузка и применение snapshot
+    // -------------------------------------------------------------------------
+
+    private suspend fun ensureLoaded() {
+        if (roomsCache.isNotEmpty() || devicesCache.isNotEmpty()) return
+
+        when (val result: ResultNetwork<SmartHomeSnapshotDto, NetworkError> =
+            remote.getSmartHomeSnapshotDto()
+        ) {
+            is ResultNetwork.Success -> applySnapshot(result.data)
+            is ResultNetwork.Error -> {
+                // на примере просто игнорируем и оставляем пустые списки
+                // можно кинуть исключение или логировать
+            }
+        }
+    }
+
+    private suspend fun applySnapshot(dto: SmartHomeSnapshotDto) {
+        mutex.withLock {
+            roomsCache = dto.rooms.map { it.toDomain() }
+            devicesCache = dto.devices.map { it.toDomain() }
+        }
+    }
+
+
+    private suspend fun pushSnapshotToServer() {
+        val rooms: List<Room>
+        val devices: List<Device>
+
+        mutex.withLock {
+            rooms = roomsCache
+            devices = devicesCache
+        }
+
+        // Ошибку пока не пробрасываем выше, только логируем
+        when (val result = syncApi.syncState(rooms, devices)) {
+            is ResultDomain.Success -> {
+                println("SmartHomeSync: success")
+            }
+            is ResultDomain.Error -> {
+                println("SmartHomeSync: error ${result.error}")
+            }
+        }
+    }
+
+
 
     override suspend fun getRooms(): List<Room> {
-        val result = dataSource.loadSnapshot()
-            .map { snapshot -> snapshot.rooms.map { it.toDomain() } }
-
-        return when (result.toResultDomain(
-            mapSuccess = { it },
-            mapError = { error -> "Failed to load rooms: $error" }
-        )) {
-            is ResultDomain.Success -> {
-                (result as ResultNetwork.Success).data
-            }
-            is ResultDomain.Error -> emptyList() // можно кинуть исключение, если хочешь
-        }
+        ensureLoaded()
+        return roomsCache
     }
 
     override suspend fun addRoom(name: String): Room {
-        val result = dataSource.updateSnapshot { snapshot ->
-            val newRoom = RoomDto(
-                id = UUID.randomUUID().toString(),
-                name = name
-            )
-            snapshot.copy(rooms = snapshot.rooms + newRoom)
-        }
+        ensureLoaded()
 
-        val domainResult = result.toResultDomain(
-            mapSuccess = { dto ->
-                dto.rooms.last().toDomain()
-            },
-            mapError = { "Failed to add room: $it" }
+        val room = Room(
+            id = UUID.randomUUID().toString(),
+            name = name
         )
 
-        return when (domainResult) {
-            is ResultDomain.Success -> domainResult.data
-            is ResultDomain.Error -> error(domainResult.error)
+        mutex.withLock {
+            roomsCache = roomsCache + room
         }
+
+        pushSnapshotToServer()
+
+        return room
     }
 
     override suspend fun deleteRoom(roomId: String) {
-        val result = dataSource.updateSnapshot { snapshot ->
-            snapshot.copy(
-                rooms = snapshot.rooms.filterNot { it.id == roomId },
-                devices = snapshot.devices.filterNot { it.roomId == roomId }
-            )
+        ensureLoaded()
+
+        mutex.withLock {
+            roomsCache = roomsCache.filterNot { it.id == roomId }
+            devicesCache = devicesCache.filterNot { it.roomId == roomId }
         }
 
-        // Нам не нужен data, превращаем в EmptyResult и просто игнорируем
-        result
-            .asEmptyDataResult()
-            .onError { /* тут можно залогировать */ }
+        pushSnapshotToServer()
     }
 
-    // --- Devices ---
+    // -------------------------------------------------------------------------
+    // DEVICES (чтение)
+    // -------------------------------------------------------------------------
 
     override suspend fun getDevices(): List<Device> {
-        val result = dataSource.loadSnapshot()
-            .map { snapshot -> snapshot.devices.map { it.toDomain() } }
-
-        return when (val domain = result.toResultDomain(
-            mapSuccess = { it },
-            mapError = { "Failed to load devices: $it" }
-        )) {
-            is ResultDomain.Success -> (result as ResultNetwork.Success).data
-            is ResultDomain.Error -> emptyList()
-        }
+        ensureLoaded()
+        return devicesCache
     }
 
     override suspend fun refreshSensors(): List<SensorDevice> {
-        val result = dataSource.loadSnapshot()
-            .map { snapshot ->
-                snapshot.devices
-                    .map { it.toDomain() }
-                    .filterIsInstance<SensorDevice>()
-            }
-
-        return when (val domain = result.toResultDomain(
-            mapSuccess = { it },
-            mapError = { "Failed to refresh sensors: $it" }
-        )) {
-            is ResultDomain.Success -> (result as ResultNetwork.Success).data
-            is ResultDomain.Error -> emptyList()
-        }
+        ensureLoaded()
+        return devicesCache.filterIsInstance<SensorDevice>()
     }
+
+    // -------------------------------------------------------------------------
+    // DEVICES (изменение состояния)
+    // -------------------------------------------------------------------------
 
     override suspend fun setLampPower(lampId: String, isOn: Boolean): LampDevice {
-        val result = dataSource.updateSnapshot { snapshot ->
-            val updatedDevices = snapshot.devices.map { dto ->
-                if (dto.id == lampId && dto.type == "lamp") {
-                    dto.copy(isOn = isOn)
-                } else dto
+        ensureLoaded()
+        var updated: LampDevice? = null
+
+        mutex.withLock {
+            devicesCache = devicesCache.map { device ->
+                if (device is LampDevice && device.id == lampId) {
+                    val new = device.copy(isOn = isOn)
+                    updated = new
+                    new
+                } else device
             }
-            snapshot.copy(devices = updatedDevices)
         }
 
-        val domain = result.toResultDomain(
-            mapSuccess = { dto ->
-                dto.devices.first { it.id == lampId && it.type == "lamp" }
-                    .toDomain() as LampDevice
-            },
-            mapError = { "Failed to set lamp power: $it" }
-        )
+        pushSnapshotToServer()
 
-        return when (domain) {
-            is ResultDomain.Success -> domain.data
-            is ResultDomain.Error -> error(domain.error)
-        }
+        return updated ?: error("Lamp not found: $lampId")
     }
 
-    override suspend fun setLampBrightness(lampId: String, brightness: Int): LampDevice {
+    override suspend fun setLampBrightness(
+        lampId: String,
+        brightness: Int
+    ): LampDevice {
+        ensureLoaded()
         val clamped = brightness.coerceIn(0, 100)
-        val result = dataSource.updateSnapshot { snapshot ->
-            val updatedDevices = snapshot.devices.map { dto ->
-                if (dto.id == lampId && dto.type == "lamp") {
-                    dto.copy(brightness = clamped)
-                } else dto
+        var updated: LampDevice? = null
+
+        mutex.withLock {
+            devicesCache = devicesCache.map { device ->
+                if (device is LampDevice && device.id == lampId) {
+                    val new = device.copy(brightness = clamped)
+                    updated = new
+                    new
+                } else device
             }
-            snapshot.copy(devices = updatedDevices)
         }
 
-        val domain = result.toResultDomain(
-            mapSuccess = { dto ->
-                dto.devices.first { it.id == lampId && it.type == "lamp" }
-                    .toDomain() as LampDevice
-            },
-            mapError = { "Failed to set lamp brightness: $it" }
-        )
+        pushSnapshotToServer()
 
-        return when (domain) {
-            is ResultDomain.Success -> domain.data
-            is ResultDomain.Error -> error(domain.error)
-        }
+        return updated ?: error("Lamp not found: $lampId")
     }
 
-    override suspend fun setKettlePower(kettleId: String, isOn: Boolean): KettleDevice {
-        val result = dataSource.updateSnapshot { snapshot ->
-            val updatedDevices = snapshot.devices.map { dto ->
-                if (dto.id == kettleId && dto.type == "kettle") {
-                    dto.copy(isOn = isOn)
-                } else dto
+    override suspend fun setKettlePower(
+        kettleId: String,
+        isOn: Boolean
+    ): KettleDevice {
+        ensureLoaded()
+        var updated: KettleDevice? = null
+
+        mutex.withLock {
+            devicesCache = devicesCache.map { device ->
+                if (device is KettleDevice && device.id == kettleId) {
+                    val new = device.copy(isOn = isOn)
+                    updated = new
+                    new
+                } else device
             }
-            snapshot.copy(devices = updatedDevices)
         }
 
-        val domain = result.toResultDomain(
-            mapSuccess = { dto ->
-                dto.devices.first { it.id == kettleId && it.type == "kettle" }
-                    .toDomain() as KettleDevice
-            },
-            mapError = { "Failed to set kettle power: $it" }
-        )
+        pushSnapshotToServer()
 
-        return when (domain) {
-            is ResultDomain.Success -> domain.data
-            is ResultDomain.Error -> error(domain.error)
-        }
+        return updated ?: error("Kettle not found: $kettleId")
     }
 
     override suspend fun setKettleTemperature(
         kettleId: String,
         temperature: Int
     ): KettleDevice {
+        ensureLoaded()
         val clamped = temperature.coerceIn(40, 100)
-        val result = dataSource.updateSnapshot { snapshot ->
-            val updatedDevices = snapshot.devices.map { dto ->
-                if (dto.id == kettleId && dto.type == "kettle") {
-                    dto.copy(targetTemperature = clamped)
-                } else dto
+        var updated: KettleDevice? = null
+
+        mutex.withLock {
+            devicesCache = devicesCache.map { device ->
+                if (device is KettleDevice && device.id == kettleId) {
+                    val new = device.copy(targetTemperature = clamped)
+                    updated = new
+                    new
+                } else device
             }
-            snapshot.copy(devices = updatedDevices)
         }
 
-        val domain = result.toResultDomain(
-            mapSuccess = { dto ->
-                dto.devices.first { it.id == kettleId && it.type == "kettle" }
-                    .toDomain() as KettleDevice
-            },
-            mapError = { "Failed to set kettle temperature: $it" }
-        )
+        pushSnapshotToServer()
 
-        return when (domain) {
-            is ResultDomain.Success -> domain.data
-            is ResultDomain.Error -> error(domain.error)
-        }
+        return updated ?: error("Kettle not found: $kettleId")
     }
 
-    override suspend fun setLockState(lockId: String, isLocked: Boolean): LockDevice {
-        val result = dataSource.updateSnapshot { snapshot ->
-            val updatedDevices = snapshot.devices.map { dto ->
-                if (dto.id == lockId && dto.type == "lock") {
-                    dto.copy(isLocked = isLocked)
-                } else dto
+    override suspend fun setLockState(
+        lockId: String,
+        isLocked: Boolean
+    ): LockDevice {
+        ensureLoaded()
+        var updated: LockDevice? = null
+
+        mutex.withLock {
+            devicesCache = devicesCache.map { device ->
+                if (device is LockDevice && device.id == lockId) {
+                    val new = device.copy(isLocked = isLocked)
+                    updated = new
+                    new
+                } else device
             }
-            snapshot.copy(devices = updatedDevices)
         }
 
-        val domain = result.toResultDomain(
-            mapSuccess = { dto ->
-                dto.devices.first { it.id == lockId && it.type == "lock" }
-                    .toDomain() as LockDevice
-            },
-            mapError = { "Failed to set lock state: $it" }
-        )
+        pushSnapshotToServer()
 
-        return when (domain) {
-            is ResultDomain.Success -> domain.data
-            is ResultDomain.Error -> error(domain.error)
-        }
+        return updated ?: error("Lock not found: $lockId")
     }
-
-    // Добавление техники (используется HomeAction.AddDevice)
 
     override suspend fun addDevice(
         roomId: String,
         kind: DeviceKind,
         name: String
     ): Device {
-        val result = dataSource.updateSnapshot { snapshot ->
-            val id = UUID.randomUUID().toString()
-            val baseName = name.ifBlank {
-                when (kind) {
-                    DeviceKind.LAMP -> "Lamp"
-                    DeviceKind.KETTLE -> "Kettle"
-                    DeviceKind.LOCK -> "Smart lock"
-                    DeviceKind.SENSOR_TEMPERATURE -> "Temperature sensor"
-                }
-            }
+        ensureLoaded()
 
-            val newDeviceDto = when (kind) {
-                DeviceKind.SENSOR_TEMPERATURE -> DeviceDto(
-                    id = id,
-                    name = baseName,
-                    roomId = roomId,
-                    isFavorite = false,
-                    type = "sensor",
-                    sensorType = SensorType.TEMPERATURE.name,
-                    value = "25°C / 50%",
-                    isAlarm = false
-                )
-                DeviceKind.LAMP -> DeviceDto(
-                    id = id,
-                    name = baseName,
-                    roomId = roomId,
-                    isFavorite = false,
-                    type = "lamp",
-                    isOn = false,
-                    brightness = 60
-                )
-                DeviceKind.KETTLE -> DeviceDto(
-                    id = id,
-                    name = baseName,
-                    roomId = roomId,
-                    isFavorite = false,
-                    type = "kettle",
-                    isOn = false,
-                    targetTemperature = 90
-                )
-                DeviceKind.LOCK -> DeviceDto(
-                    id = id,
-                    name = baseName,
-                    roomId = roomId,
-                    isFavorite = false,
-                    type = "lock",
-                    isLocked = true
-                )
-            }
-
-            snapshot.copy(
-                devices = snapshot.devices + newDeviceDto
+        val device: Device = when (kind) {
+            DeviceKind.SENSOR_TEMPERATURE -> SensorDevice(
+                id = UUID.randomUUID().toString(),
+                name = if (name.isBlank()) "Temperature sensor" else name,
+                roomId = roomId,
+                isFavorite = false,
+                type = SensorType.TEMPERATURE,
+                value = "25°C / 50%",
+                isAlarm = false
+            )
+            DeviceKind.LAMP -> LampDevice(
+                id = UUID.randomUUID().toString(),
+                name = if (name.isBlank()) "Lamp" else name,
+                roomId = roomId,
+                isFavorite = false,
+                isOn = false,
+                brightness = 60
+            )
+            DeviceKind.KETTLE -> KettleDevice(
+                id = UUID.randomUUID().toString(),
+                name = if (name.isBlank()) "Kettle" else name,
+                roomId = roomId,
+                isFavorite = false,
+                isOn = false,
+                targetTemperature = 90
+            )
+            DeviceKind.LOCK -> LockDevice(
+                id = UUID.randomUUID().toString(),
+                name = if (name.isBlank()) "Smart lock" else name,
+                roomId = roomId,
+                isFavorite = false,
+                isLocked = true
             )
         }
 
-        val domain = result.toResultDomain(
-            mapSuccess = { dto ->
-                dto.devices.last().toDomain()
-            },
-            mapError = { "Failed to add device: $it" }
-        )
+        mutex.withLock {
+            devicesCache = devicesCache + device
+        }
 
-        return when (domain) {
-            is ResultDomain.Success -> domain.data
-            is ResultDomain.Error -> error(domain.error)
+        pushSnapshotToServer()
+
+        return device
+    }
+
+    override suspend fun subscribeDevicesSnapshots(
+        coroutineScope: CoroutineScope,
+        onUpdate: (List<Room>, List<Device>) -> Unit,
+    ) {
+
+        remote.subscribeChanelChangeDataStateDevices { snapshotDto ->
+            val rooms = snapshotDto.rooms.map { it.toDomain() }
+            val devices = snapshotDto.devices.map { it.toDomain() }
+
+            runBlocking {
+                mutex.withLock {
+                    roomsCache = rooms
+                    devicesCache = devices
+                }
+            }
+
+            onUpdate(rooms, devices)
         }
     }
 }

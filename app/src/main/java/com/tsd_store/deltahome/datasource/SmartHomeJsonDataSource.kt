@@ -27,7 +27,7 @@ class SmartHomeJsonDataSource(
         transform: (SmartHomeSnapshotDto) -> SmartHomeSnapshotDto
     ): ResultNetwork<SmartHomeSnapshotDto, NetworkError> {
         return backend.parseSnapshot()
-            .map(transform)                // Result<SmartHomeSnapshotDto, NetworkError>
+            .map(transform)
             .onSuccess { newSnapshot ->
                 backend.saveSnapshot(newSnapshot)
             }

@@ -14,7 +14,6 @@ class SmartHomeJsonFakeBackend(
     private val json: Json = defaultJson
 ) {
 
-    // JSON-строка, с которой мы "работаем как с бэкендом"
     private var snapshotJsonText: String = initialJson
 
     fun getSnapshotJson(): String = snapshotJsonText

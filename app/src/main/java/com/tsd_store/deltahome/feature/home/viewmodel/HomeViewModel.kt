@@ -1,5 +1,6 @@
 package com.tsd_store.deltahome.feature.home.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tsd_store.deltahome.domain.DeviceRepositoryApi
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+
 class HomeViewModel(
     private val repository: DeviceRepositoryApi
 ) : ViewModel() {
@@ -27,13 +29,13 @@ class HomeViewModel(
 
     init {
         dispatch(HomeAction.Load)
+        observeRemoteSnapshots()
     }
 
     fun dispatch(action: HomeAction) {
         when (action) {
             is HomeAction.Load -> loadData()
-            is HomeAction.ChangeTab ->
-                _state.update { it.copy(selectedRoomId = action.roomId) }
+            is HomeAction.ChangeTab -> _state.update { it.copy(selectedRoomId = action.roomId) }
 
             is HomeAction.ToggleLamp ->
                 updateLamp(action.lampId, action.isOn)
@@ -59,23 +61,12 @@ class HomeViewModel(
             is HomeAction.DeleteRoom ->
                 deleteRoom(action.roomId)
 
-            is HomeAction.AddDevice -> addDevice(action.roomId, action.kind, action.name)
+            is HomeAction.AddDevice ->
+                addDevice(action.roomId, action.kind, action.name)
         }
     }
 
-    private fun addDevice(roomId: String, kind: DeviceKind, name: String) =
-        viewModelScope.launch {
-            try {
-                val device = repository.addDevice(roomId, kind, name)
-                _state.update { state ->
-                    state.copy(devices = state.devices + device)
-                }
-            } catch (t: Throwable) {
-                _effects.send(
-                    HomeEffect.ShowError(t.message ?: "Error adding device")
-                )
-            }
-        }
+    // ------------------- load/observe -------------------
 
     private fun loadData() = viewModelScope.launch {
         _state.update { it.copy(isLoading = true, error = null) }
@@ -87,12 +78,25 @@ class HomeViewModel(
                     isLoading = false,
                     rooms = rooms,
                     devices = devices,
-                    // по умолчанию – Favorites (selectedRoomId = null)
+                    // по умолчанию — Favorites (selectedRoomId = null)
                 )
             }
         } catch (t: Throwable) {
             _state.update { it.copy(isLoading = false, error = t.message) }
             _effects.send(HomeEffect.ShowError(t.message ?: "Unknown error"))
+        }
+    }
+
+    private fun observeRemoteSnapshots() = viewModelScope.launch {
+
+        repository.subscribeDevicesSnapshots(this) { rooms, devices ->
+            Log.d("HomeViewModel", rooms.toString() + devices.toString())
+            _state.update { current ->
+                current.copy(
+                    rooms = rooms,
+                    devices = devices
+                )
+            }
         }
     }
 
@@ -119,7 +123,7 @@ class HomeViewModel(
                 state.copy(
                     rooms = newRooms,
                     devices = newDevices,
-                    selectedRoomId = null   // уходим на Favorites
+                    selectedRoomId = null
                 )
             }
         } catch (t: Throwable) {
@@ -127,36 +131,18 @@ class HomeViewModel(
         }
     }
 
-    private fun updateKettleTemperature(id: String, temperature: Int) =
-        viewModelScope.launch {
-            try {
-                val kettle = repository.setKettleTemperature(id, temperature)
-                updateDeviceInState(kettle)
-            } catch (_: Throwable) {
-            }
-        }
-
-    private fun loadDevices() = viewModelScope.launch {
-        _state.update { it.copy(isLoading = true, error = null) }
-        try {
-            val devices = repository.getDevices()
-            _state.update { it.copy(isLoading = false, devices = devices) }
-        } catch (t: Throwable) {
-            _state.update { it.copy(isLoading = false, error = t.message) }
-            _effects.send(HomeEffect.ShowError(t.message ?: "Unknown error"))
-        }
-    }
+    // ------------------- Devices -------------------
 
     private fun refreshSensors() = viewModelScope.launch {
         try {
-            val updated = repository.refreshSensors()
+            val sensors = repository.refreshSensors()
             _state.update { state ->
-                val newDevices = state.devices.map { device ->
-                    if (device is SensorDevice) {
-                        updated.firstOrNull { it.id == device.id } ?: device
-                    } else device
+                val updatedDevices = state.devices.map { dev ->
+                    if (dev is SensorDevice) {
+                        sensors.firstOrNull { it.id == dev.id } ?: dev
+                    } else dev
                 }
-                state.copy(devices = newDevices)
+                state.copy(devices = updatedDevices)
             }
         } catch (_: Throwable) {
         }
@@ -186,6 +172,15 @@ class HomeViewModel(
         }
     }
 
+    private fun updateKettleTemperature(id: String, temperature: Int) =
+        viewModelScope.launch {
+            try {
+                val kettle = repository.setKettleTemperature(id, temperature)
+                updateDeviceInState(kettle)
+            } catch (_: Throwable) {
+            }
+        }
+
     private fun updateLock(id: String, isLocked: Boolean) = viewModelScope.launch {
         try {
             val lock = repository.setLockState(id, isLocked)
@@ -193,6 +188,18 @@ class HomeViewModel(
         } catch (_: Throwable) {
         }
     }
+
+    private fun addDevice(roomId: String, kind: DeviceKind, name: String) =
+        viewModelScope.launch {
+            try {
+                val device = repository.addDevice(roomId, kind, name)
+                _state.update { state ->
+                    state.copy(devices = state.devices + device)
+                }
+            } catch (t: Throwable) {
+                _effects.send(HomeEffect.ShowError(t.message ?: "Error adding device"))
+            }
+        }
 
     private fun updateDeviceInState(newDevice: Device) {
         _state.update { state ->

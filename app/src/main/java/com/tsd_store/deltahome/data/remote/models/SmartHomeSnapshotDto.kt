@@ -5,6 +5,7 @@ import kotlinx.serialization.SerializationStrategy
 
 @Serializable
 data class SmartHomeSnapshotDto(
-    val rooms: List<RoomDto>,
-    val devices: List<DeviceDto>
+    val rooms: List<RoomDto> = emptyList(),
+    val devices: List<DeviceDto> = emptyList()
 )
+
