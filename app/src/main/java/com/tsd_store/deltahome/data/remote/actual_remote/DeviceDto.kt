@@ -3,7 +3,7 @@ package com.tsd_store.deltahome.data.remote.actual_remote
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class DeviceDto(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
