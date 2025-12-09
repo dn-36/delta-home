@@ -1,9 +1,8 @@
 package com.tsd_store.deltahome.feature.home.viewmodel
 
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.DeviceKind
-import com.tsd_store.deltahome.domain.model.Room
-import com.tsd_store.deltahome.domain.model.RoomType
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
+import com.tsd_store.deltahome.domain.old_domain.model.Room
 
 sealed interface HomeAction {
     data object Load : HomeAction

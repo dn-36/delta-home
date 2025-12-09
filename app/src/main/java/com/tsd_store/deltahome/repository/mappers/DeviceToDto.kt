@@ -1,48 +1,52 @@
 package com.tsd_store.deltahome.repository.mappers
 
-import com.tsd_store.deltahome.data.remote.models.DeviceDto
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.KettleDevice
-import com.tsd_store.deltahome.domain.model.LampDevice
-import com.tsd_store.deltahome.domain.model.LockDevice
-import com.tsd_store.deltahome.domain.model.SensorDevice
+import com.tsd_store.deltahome.data.remote.old_remote.models.DeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.KettleDeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.LampDeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.LockDeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.SensorDeviceDto
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.KettleDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LockDevice
+import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
 
 
 fun Device.toDto(): DeviceDto = when (this) {
-    is SensorDevice -> DeviceDto(
-        id = id,
+
+    is SensorDevice -> SensorDeviceDto(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "sensor",
         sensorType = type.name,
         value = value,
         isAlarm = isAlarm
     )
-    is LampDevice -> DeviceDto(
-        id = id,
+
+    is LampDevice -> LampDeviceDto(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "lamp",
         isOn = isOn,
         brightness = brightness
     )
-    is KettleDevice -> DeviceDto(
-        id = id,
+
+    is KettleDevice -> KettleDeviceDto(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "kettle",
         isOn = isOn,
         targetTemperature = targetTemperature
     )
-    is LockDevice -> DeviceDto(
-        id = id,
+
+    is LockDevice -> LockDeviceDto(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = "lock",
         isLocked = isLocked
     )
 }

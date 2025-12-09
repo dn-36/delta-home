@@ -3,19 +3,19 @@ package com.tsd_store.deltahome.repository
 import com.tsd_store.deltahome.common.domain.models.ResultDomain
 import com.tsd_store.deltahome.common.network.NetworkError
 import com.tsd_store.deltahome.common.network.ResultNetwork
-import com.tsd_store.deltahome.data.remote.SmartHomeRemoteDataSource
-import com.tsd_store.deltahome.data.remote.models.SmartHomeSnapshotDto
+import com.tsd_store.deltahome.data.remote.old_remote.SmartHomeRemoteDataSource
+import com.tsd_store.deltahome.data.remote.old_remote.models.SmartHomeSnapshotDto
 import com.tsd_store.deltahome.repository.mappers.toDomain
-import com.tsd_store.deltahome.domain.DeviceRepositoryApi
-import com.tsd_store.deltahome.domain.SmartHomeSyncApi
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.DeviceKind
-import com.tsd_store.deltahome.domain.model.KettleDevice
-import com.tsd_store.deltahome.domain.model.LampDevice
-import com.tsd_store.deltahome.domain.model.LockDevice
-import com.tsd_store.deltahome.domain.model.Room
-import com.tsd_store.deltahome.domain.model.SensorDevice
-import com.tsd_store.deltahome.domain.model.SensorType
+import com.tsd_store.deltahome.domain.old_domain.DeviceRepositoryApi
+import com.tsd_store.deltahome.domain.old_domain.SmartHomeSyncApi
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
+import com.tsd_store.deltahome.domain.old_domain.model.KettleDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LockDevice
+import com.tsd_store.deltahome.domain.old_domain.model.Room
+import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.model.SensorType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -34,9 +34,6 @@ class DeviceRepositoryImpl(
 
     private val mutex = Mutex()
 
-    // -------------------------------------------------------------------------
-    // ВСПОМОГАТЕЛЬНО: загрузка и применение snapshot
-    // -------------------------------------------------------------------------
 
     private suspend fun ensureLoaded() {
         if (roomsCache.isNotEmpty() || devicesCache.isNotEmpty()) return
@@ -115,10 +112,6 @@ class DeviceRepositoryImpl(
         pushSnapshotToServer()
     }
 
-    // -------------------------------------------------------------------------
-    // DEVICES (чтение)
-    // -------------------------------------------------------------------------
-
     override suspend fun getDevices(): List<Device> {
         ensureLoaded()
         return devicesCache
@@ -129,17 +122,13 @@ class DeviceRepositoryImpl(
         return devicesCache.filterIsInstance<SensorDevice>()
     }
 
-    // -------------------------------------------------------------------------
-    // DEVICES (изменение состояния)
-    // -------------------------------------------------------------------------
-
     override suspend fun setLampPower(lampId: String, isOn: Boolean): LampDevice {
         ensureLoaded()
         var updated: LampDevice? = null
 
         mutex.withLock {
             devicesCache = devicesCache.map { device ->
-                if (device is LampDevice && device.id == lampId) {
+                if (device is LampDevice && device.token == lampId) {
                     val new = device.copy(isOn = isOn)
                     updated = new
                     new
@@ -162,7 +151,7 @@ class DeviceRepositoryImpl(
 
         mutex.withLock {
             devicesCache = devicesCache.map { device ->
-                if (device is LampDevice && device.id == lampId) {
+                if (device is LampDevice && device.token == lampId) {
                     val new = device.copy(brightness = clamped)
                     updated = new
                     new
@@ -184,7 +173,7 @@ class DeviceRepositoryImpl(
 
         mutex.withLock {
             devicesCache = devicesCache.map { device ->
-                if (device is KettleDevice && device.id == kettleId) {
+                if (device is KettleDevice && device.token == kettleId) {
                     val new = device.copy(isOn = isOn)
                     updated = new
                     new
@@ -207,7 +196,7 @@ class DeviceRepositoryImpl(
 
         mutex.withLock {
             devicesCache = devicesCache.map { device ->
-                if (device is KettleDevice && device.id == kettleId) {
+                if (device is KettleDevice && device.token == kettleId) {
                     val new = device.copy(targetTemperature = clamped)
                     updated = new
                     new
@@ -229,7 +218,7 @@ class DeviceRepositoryImpl(
 
         mutex.withLock {
             devicesCache = devicesCache.map { device ->
-                if (device is LockDevice && device.id == lockId) {
+                if (device is LockDevice && device.token == lockId) {
                     val new = device.copy(isLocked = isLocked)
                     updated = new
                     new
@@ -242,6 +231,8 @@ class DeviceRepositoryImpl(
         return updated ?: error("Lock not found: $lockId")
     }
 
+
+
     override suspend fun addDevice(
         roomId: String,
         kind: DeviceKind,
@@ -249,40 +240,85 @@ class DeviceRepositoryImpl(
     ): Device {
         ensureLoaded()
 
-        val device: Device = when (kind) {
-            DeviceKind.SENSOR_TEMPERATURE -> SensorDevice(
-                id = UUID.randomUUID().toString(),
-                name = if (name.isBlank()) "Temperature sensor" else name,
-                roomId = roomId,
-                isFavorite = false,
-                type = SensorType.TEMPERATURE,
-                value = "25°C / 50%",
-                isAlarm = false
-            )
-            DeviceKind.LAMP -> LampDevice(
-                id = UUID.randomUUID().toString(),
-                name = if (name.isBlank()) "Lamp" else name,
-                roomId = roomId,
-                isFavorite = false,
-                isOn = false,
-                brightness = 60
-            )
-            DeviceKind.KETTLE -> KettleDevice(
-                id = UUID.randomUUID().toString(),
-                name = if (name.isBlank()) "Kettle" else name,
-                roomId = roomId,
-                isFavorite = false,
-                isOn = false,
-                targetTemperature = 90
-            )
-            DeviceKind.LOCK -> LockDevice(
-                id = UUID.randomUUID().toString(),
-                name = if (name.isBlank()) "Smart lock" else name,
-                roomId = roomId,
-                isFavorite = false,
-                isLocked = true
-            )
+        return when (kind) {
+
+            DeviceKind.SENSOR_TEMPERATURE ->
+                addSensor(roomId, SensorType.TEMPERATURE, name)
+
+            DeviceKind.SENSOR_WATER_LEAK ->
+                addSensor(roomId, SensorType.WATER_LEAK, name)
+
+            DeviceKind.SENSOR_SMOKE ->
+                addSensor(roomId, SensorType.SMOKE, name)
+
+            DeviceKind.SENSOR_ELECTRICITY ->
+                addSensor(roomId, SensorType.ELECTRICITY, name)
+
+            DeviceKind.LAMP -> {
+                val device = LampDevice(
+                    token = UUID.randomUUID().toString(),
+                    name = if (name.isBlank()) "Lamp" else name,
+                    roomId = roomId,
+                    isFavorite = false,
+                    isOn = false,
+                    brightness = 60
+                )
+                mutex.withLock {
+                    devicesCache = devicesCache + device
+                }
+                pushSnapshotToServer()
+                device
+            }
+
+            DeviceKind.KETTLE -> {
+                val device = KettleDevice(
+                    token = UUID.randomUUID().toString(),
+                    name = if (name.isBlank()) "Kettle" else name,
+                    roomId = roomId,
+                    isFavorite = false,
+                    isOn = false,
+                    targetTemperature = 90
+                )
+                mutex.withLock {
+                    devicesCache = devicesCache + device
+                }
+                pushSnapshotToServer()
+                device
+            }
+
+            DeviceKind.LOCK -> {
+                val device = LockDevice(
+                    token = UUID.randomUUID().toString(),
+                    name = if (name.isBlank()) "Smart lock" else name,
+                    roomId = roomId,
+                    isFavorite = false,
+                    isLocked = true
+                )
+                mutex.withLock {
+                    devicesCache = devicesCache + device
+                }
+                pushSnapshotToServer()
+                device
+            }
         }
+    }
+
+    override suspend fun addSensor(
+        roomId: String,
+        sensorType: SensorType,
+        name: String
+    ): SensorDevice {
+        ensureLoaded()
+
+        val device = SensorDevice(
+            token = UUID.randomUUID().toString(),
+            name =  name,
+            roomId = roomId,
+            isFavorite = false,
+            type = sensorType,
+            value = sensorType.name,
+            isAlarm = false
+        )
 
         mutex.withLock {
             devicesCache = devicesCache + device
@@ -292,6 +328,7 @@ class DeviceRepositoryImpl(
 
         return device
     }
+
 
     override suspend fun subscribeDevicesSnapshots(
         coroutineScope: CoroutineScope,

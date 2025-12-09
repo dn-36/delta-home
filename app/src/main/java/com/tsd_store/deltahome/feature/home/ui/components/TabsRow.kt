@@ -18,7 +18,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.IntOffset
-import com.tsd_store.deltahome.domain.model.Room
+import com.tsd_store.deltahome.domain.old_domain.model.Room
 import kotlin.math.roundToInt
 
 @Composable

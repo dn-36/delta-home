@@ -6,7 +6,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.tsd_store.deltahome.domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
 
 @Composable
 fun SensorCard(device: SensorDevice) {

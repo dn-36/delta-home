@@ -1,7 +1,6 @@
-package com.tsd_store.deltahome.data.remote.models
+package com.tsd_store.deltahome.data.remote.old_remote.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationStrategy
 
 @Serializable
 data class SmartHomeSnapshotDto(

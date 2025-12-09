@@ -1,4 +1,4 @@
-package com.tsd_store.deltahome.data.remote
+package com.tsd_store.deltahome.data.remote.old_remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

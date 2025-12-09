@@ -1,4 +1,4 @@
-package com.tsd_store.deltahome.data.remote
+package com.tsd_store.deltahome.data.remote.old_remote
 
 import android.util.Log
 import com.module.core.network.chats.ChatResponseMessages
@@ -12,10 +12,9 @@ import com.tsd_store.deltahome.common.network.NetworkError
 import com.tsd_store.deltahome.common.network.ResultNetwork
 import com.tsd_store.deltahome.common.network.makeRequest
 import com.tsd_store.deltahome.common.network.onSuccess
-import com.tsd_store.deltahome.data.remote.models.SmartHomeSnapshotDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.SmartHomeSnapshotDto
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -81,21 +80,7 @@ class  SmartHomeRemoteDataSource(
         }
     }
 
-    suspend fun updateSmartHomeSnapshot(
-        snapshot: SmartHomeSnapshotDto
-    ): ResultNetwork<String, NetworkError> {
-//20:50 21:20
-       // val textJson: String = json.encodeToString(serializer = snapshot)
-        val textJson: String = json.encodeToString(snapshot)
 
-
-        // Без файлов и картинок, только текст = JSON
-        return sendMessage(
-            chatUI = UI_CHAT_DEVICE_MANEGEMENT,
-            text = textJson,
-
-        )
-    }
 
     suspend fun sendMessage(
         chatUI: String,

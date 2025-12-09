@@ -14,11 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tsd_store.deltahome.feature.home.viewmodel.HomeAction
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.KettleDevice
-import com.tsd_store.deltahome.domain.model.LampDevice
-import com.tsd_store.deltahome.domain.model.LockDevice
-import com.tsd_store.deltahome.domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.KettleDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LockDevice
+import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
 
 @Composable
 fun DevicesGrid(
@@ -47,7 +47,7 @@ fun DevicesGrid(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(devices, key = { it.id }) { device ->
+            items(devices, key = { it.token }) { device ->
                 when (device) {
                     is SensorDevice -> SensorCard(device)
                     is LampDevice -> LampCard(device, onAction)

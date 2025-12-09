@@ -19,14 +19,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tsd_store.deltahome.feature.home.viewmodel.HomeAction
-import com.tsd_store.deltahome.domain.model.KettleDevice
+import com.tsd_store.deltahome.domain.old_domain.model.KettleDevice
 
 @Composable
 fun KettleCard(device: KettleDevice, onAction: (HomeAction) -> Unit) {
-    var showTempDialog by remember(device.id) { mutableStateOf(false) }
+    var showTempDialog by remember(device.token) { mutableStateOf(false) }
 
     if (showTempDialog) {
-        var localTemp by remember(device.id, device.targetTemperature) {
+        var localTemp by remember(device.token, device.targetTemperature) {
             mutableStateOf(device.targetTemperature.toFloat())
         }
 
@@ -49,7 +49,7 @@ fun KettleCard(device: KettleDevice, onAction: (HomeAction) -> Unit) {
                     onClick = {
                         onAction(
                             HomeAction.ChangeKettleTemperature(
-                                device.id,
+                                device.token,
                                 localTemp.toInt()
                             )
                         )
@@ -73,7 +73,7 @@ fun KettleCard(device: KettleDevice, onAction: (HomeAction) -> Unit) {
         trailing = {
             Switch(
                 checked = device.isOn,
-                onCheckedChange = { onAction(HomeAction.ToggleKettle(device.id, it)) }
+                onCheckedChange = { onAction(HomeAction.ToggleKettle(device.token, it)) }
             )
         },
         footer = {

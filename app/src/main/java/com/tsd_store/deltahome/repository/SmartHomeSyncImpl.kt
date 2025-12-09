@@ -4,12 +4,12 @@ import com.tsd_store.deltahome.common.domain.models.ResultDomain
 import com.tsd_store.deltahome.common.domain.toResultDomain
 import com.tsd_store.deltahome.common.network.NetworkError
 import com.tsd_store.deltahome.common.network.ResultNetwork
-import com.tsd_store.deltahome.data.remote.SmartHomeRemoteDataSource
-import com.tsd_store.deltahome.data.remote.models.SmartHomeSnapshotDto
+import com.tsd_store.deltahome.data.remote.old_remote.SmartHomeRemoteDataSource
+import com.tsd_store.deltahome.data.remote.old_remote.models.SmartHomeSnapshotDto
 import com.tsd_store.deltahome.repository.mappers.toDto
-import com.tsd_store.deltahome.domain.SmartHomeSyncApi
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.Room
+import com.tsd_store.deltahome.domain.old_domain.SmartHomeSyncApi
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.Room
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 

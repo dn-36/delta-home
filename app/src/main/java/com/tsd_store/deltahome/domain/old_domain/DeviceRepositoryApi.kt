@@ -1,12 +1,13 @@
-package com.tsd_store.deltahome.domain
+package com.tsd_store.deltahome.domain.old_domain
 
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.DeviceKind
-import com.tsd_store.deltahome.domain.model.KettleDevice
-import com.tsd_store.deltahome.domain.model.LampDevice
-import com.tsd_store.deltahome.domain.model.LockDevice
-import com.tsd_store.deltahome.domain.model.Room
-import com.tsd_store.deltahome.domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
+import com.tsd_store.deltahome.domain.old_domain.model.KettleDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LockDevice
+import com.tsd_store.deltahome.domain.old_domain.model.Room
+import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.model.SensorType
 import kotlinx.coroutines.CoroutineScope
 
 interface DeviceRepositoryApi {
@@ -28,17 +29,16 @@ interface DeviceRepositoryApi {
 
     suspend fun setLockState(lockId: String, isLocked: Boolean): LockDevice
 
-    suspend fun addDevice(
-        roomId: String,
-        kind: DeviceKind,
-        name: String
-    ): Device
+    suspend fun addDevice(roomId: String, kind: DeviceKind, name: String): Device
 
-    /**
-     * Подписка на изменения от сервера.
-     * Когда приходит новый snapshot, репозиторий сам обновляет локальный кеш
-     * и вызывает onUpdate(rooms, devices).
-     */
+    // 🔥 новый удобный метод — добавить сенсор конкретного типа
+    suspend fun addSensor(
+        roomId: String,
+        sensorType: SensorType,
+        name: String
+    ): SensorDevice
+
+
     suspend fun subscribeDevicesSnapshots(
         coroutineScope: CoroutineScope,
         onUpdate: (rooms: List<Room>, devices: List<Device>) -> Unit

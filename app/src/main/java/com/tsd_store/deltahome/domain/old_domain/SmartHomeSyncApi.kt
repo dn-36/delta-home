@@ -1,8 +1,8 @@
-package com.tsd_store.deltahome.domain
+package com.tsd_store.deltahome.domain.old_domain
 
 import com.tsd_store.deltahome.common.domain.models.ResultDomain
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.Room
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.Room
 
 interface SmartHomeSyncApi {
 

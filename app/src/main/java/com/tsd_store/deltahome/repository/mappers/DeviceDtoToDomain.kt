@@ -1,46 +1,53 @@
 package com.tsd_store.deltahome.repository.mappers
 
-import com.tsd_store.deltahome.data.remote.models.DeviceDto
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.KettleDevice
-import com.tsd_store.deltahome.domain.model.LampDevice
-import com.tsd_store.deltahome.domain.model.LockDevice
-import com.tsd_store.deltahome.domain.model.SensorDevice
-import com.tsd_store.deltahome.domain.model.SensorType
+import com.tsd_store.deltahome.data.remote.old_remote.models.DeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.KettleDeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.LampDeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.LockDeviceDto
+import com.tsd_store.deltahome.data.remote.old_remote.models.SensorDeviceDto
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.KettleDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LockDevice
+import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.model.SensorType
 
 
-fun DeviceDto.toDomain(): Device = when (type.lowercase()) {
-    "sensor" -> SensorDevice(
-        id = id,
+fun DeviceDto.toDomain(): Device = when (this) {
+
+    is SensorDeviceDto -> SensorDevice(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        type = SensorType.valueOf(sensorType ?: SensorType.TEMPERATURE.name),
-        value = value.orEmpty(),
-        isAlarm = isAlarm ?: false
+        type = SensorType.valueOf(sensorType),
+        value = value,
+        isAlarm = isAlarm
     )
-    "lamp" -> LampDevice(
-        id = id,
+
+    is LampDeviceDto -> LampDevice(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        isOn = isOn ?: false,
-        brightness = brightness ?: 0
+        isOn = isOn,
+        brightness = brightness
     )
-    "kettle" -> KettleDevice(
-        id = id,
+
+    is KettleDeviceDto -> KettleDevice(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        isOn = isOn ?: false,
-        targetTemperature = targetTemperature ?: 90
+        isOn = isOn,
+        targetTemperature = targetTemperature
     )
-    "lock" -> LockDevice(
-        id = id,
+
+    is LockDeviceDto -> LockDevice(
+        token = token,
         name = name,
         roomId = roomId,
         isFavorite = isFavorite,
-        isLocked = isLocked ?: true
+        isLocked = isLocked
     )
-    else -> error("Unknown device type: $type")
 }

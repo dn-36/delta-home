@@ -19,15 +19,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tsd_store.deltahome.feature.home.viewmodel.HomeAction
-import com.tsd_store.deltahome.domain.model.LampDevice
+import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
 
 @Composable
   fun LampCard(device: LampDevice, onAction: (HomeAction) -> Unit) {
-    var showDialog by remember(device.id) { mutableStateOf(false) }
+    var showDialog by remember(device.token) { mutableStateOf(false) }
 
     // Диалог изменения яркости — только если лампа включена
     if (showDialog && device.isOn) {
-        var localValue by remember(device.id, device.brightness) {
+        var localValue by remember(device.token, device.brightness) {
             mutableStateOf(device.brightness.toFloat())
         }
 
@@ -50,7 +50,7 @@ import com.tsd_store.deltahome.domain.model.LampDevice
                     onClick = {
                         onAction(
                             HomeAction.ChangeLampBrightness(
-                                device.id,
+                                device.token,
                                 localValue.toInt()
                             )
                         )
@@ -76,7 +76,7 @@ import com.tsd_store.deltahome.domain.model.LampDevice
         trailing = {
             Switch(
                 checked = device.isOn,
-                onCheckedChange = { onAction(HomeAction.ToggleLamp(device.id, it)) }
+                onCheckedChange = { onAction(HomeAction.ToggleLamp(device.token, it)) }
             )
         },
         footer = {

@@ -35,7 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.tsd_store.deltahome.domain.model.DeviceKind
+import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
 import com.tsd_store.deltahome.feature.home.viewmodel.HomeAction
 import io.ktor.websocket.Frame
 
@@ -88,6 +88,22 @@ fun AddDeviceCard(
                         selected = selectedKind == DeviceKind.SENSOR_TEMPERATURE,
                         onClick = { selectedKind = DeviceKind.SENSOR_TEMPERATURE }
                     )
+                    DeviceTypeOption(
+                        title = "Smoke sensor",
+                        selected = selectedKind == DeviceKind.SENSOR_SMOKE,
+                        onClick = { selectedKind = DeviceKind.SENSOR_SMOKE }
+                    )
+                    DeviceTypeOption(
+                        title = "Electricity sensor",
+                        selected = selectedKind == DeviceKind.SENSOR_ELECTRICITY,
+                        onClick = { selectedKind = DeviceKind.SENSOR_ELECTRICITY }
+                    )
+                    DeviceTypeOption(
+                        title = "Water leak sensor",
+                        selected = selectedKind == DeviceKind.SENSOR_WATER_LEAK ,
+                        onClick = { selectedKind = DeviceKind.SENSOR_WATER_LEAK }
+                    )
+
                 }
             },
             confirmButton = {

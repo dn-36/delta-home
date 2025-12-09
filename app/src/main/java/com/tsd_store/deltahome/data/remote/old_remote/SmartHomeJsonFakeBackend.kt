@@ -1,14 +1,4 @@
-package com.tsd_store.deltahome.data.remote
-
-import com.tsd_store.deltahome.common.network.EmptyResult
-import com.tsd_store.deltahome.common.network.NetworkError
-import com.tsd_store.deltahome.common.network.ResultNetwork
-import com.tsd_store.deltahome.data.remote.models.DeviceDto
-import com.tsd_store.deltahome.data.remote.models.RoomDto
-import com.tsd_store.deltahome.data.remote.models.SmartHomeSnapshotDto
-import com.tsd_store.deltahome.domain.model.SensorType
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.encodeToString
+package com.tsd_store.deltahome.data.remote.old_remote
 
 /*
 class SmartHomeJsonFakeBackend(

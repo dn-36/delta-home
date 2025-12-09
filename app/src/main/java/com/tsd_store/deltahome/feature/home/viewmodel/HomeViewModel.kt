@@ -3,10 +3,10 @@ package com.tsd_store.deltahome.feature.home.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tsd_store.deltahome.domain.DeviceRepositoryApi
-import com.tsd_store.deltahome.domain.model.Device
-import com.tsd_store.deltahome.domain.model.DeviceKind
-import com.tsd_store.deltahome.domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.DeviceRepositoryApi
+import com.tsd_store.deltahome.domain.old_domain.model.Device
+import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
+import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -139,7 +139,7 @@ class HomeViewModel(
             _state.update { state ->
                 val updatedDevices = state.devices.map { dev ->
                     if (dev is SensorDevice) {
-                        sensors.firstOrNull { it.id == dev.id } ?: dev
+                        sensors.firstOrNull { it.token == dev.token } ?: dev
                     } else dev
                 }
                 state.copy(devices = updatedDevices)
@@ -204,7 +204,7 @@ class HomeViewModel(
     private fun updateDeviceInState(newDevice: Device) {
         _state.update { state ->
             val list = state.devices.map { old ->
-                if (old.id == newDevice.id) newDevice else old
+                if (old.token == newDevice.token) newDevice else old
             }
             state.copy(devices = list)
         }
