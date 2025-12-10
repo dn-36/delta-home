@@ -79,8 +79,12 @@ fun HomeScreenContent(
             TabsRow(
                 rooms = state.rooms,
                 selectedRoomId = state.selectedRoomId,
-                onSelected = { roomId -> onAction(HomeAction.ChangeTab(roomId)) },
-                onDeleteRoom = { roomId -> onAction(HomeAction.DeleteRoom(roomId)) }
+                onSelected = {
+                   // roomId -> onAction(HomeAction.ChangeTab(roomId))
+                             },
+                onDeleteRoom = {
+                 //   roomId -> onAction(HomeAction.DeleteRoom(roomId))
+                }
             )
 
             if (state.isLoading && state.devices.isEmpty()) {
@@ -92,10 +96,10 @@ fun HomeScreenContent(
                 }
             } else {
                 DevicesGrid(
-                    devices = state.devices.filter { device ->
+                    devices = state.devices/*.filter { device ->
                         (state.selectedRoomId == null && device.isFavorite) ||
                                 (state.selectedRoomId != null && device.roomId == state.selectedRoomId)
-                    },
+                    }*/,
                     selectedRoomId = state.selectedRoomId,
                     onAction = onAction
                 )

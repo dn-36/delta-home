@@ -1,5 +1,6 @@
 package com.tsd_store.deltahome.feature.home.viewmodel
 
+import com.tsd_store.deltahome.data.remote.actual_remote.DeviceDto
 import com.tsd_store.deltahome.domain.old_domain.model.Device
 import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
 import com.tsd_store.deltahome.domain.old_domain.model.Room
@@ -8,7 +9,7 @@ sealed interface HomeAction {
     data object Load : HomeAction
 
     // null = Favorites, roomId = конкретная комната
-    data class ChangeTab(val roomId: String?) : HomeAction
+   /* data class ChangeTab(val roomId: String?) : HomeAction
 
     // lamp
     data class ToggleLamp(val lampId: String, val isOn: Boolean) : HomeAction
@@ -32,7 +33,7 @@ sealed interface HomeAction {
         val name: String
     ) : HomeAction
     data class AddRoom(val name: String) : HomeAction
-    data class DeleteRoom(val roomId: String) : HomeAction
+    data class DeleteRoom(val roomId: String) : HomeAction*/
 }
 
 data class HomeState(
@@ -42,7 +43,7 @@ data class HomeState(
     val rooms: List<Room> = emptyList(),
     val selectedRoomId: String? = null,   // null -> Favorites tab
 
-    val devices: List<Device> = emptyList()
+    val devices: List<DeviceDto> = emptyList()
 )
 
 sealed interface HomeEffect {

@@ -3,6 +3,7 @@ package com.tsd_store.deltahome.feature.home.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tsd_store.deltahome.data.remote.actual_remote.FakeDevicesDatabase
 import com.tsd_store.deltahome.domain.old_domain.DeviceRepositoryApi
 import com.tsd_store.deltahome.domain.old_domain.model.Device
 import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
@@ -29,13 +30,13 @@ class HomeViewModel(
 
     init {
         dispatch(HomeAction.Load)
-        observeRemoteSnapshots()
+      //  observeRemoteSnapshots()
     }
 
     fun dispatch(action: HomeAction) {
         when (action) {
             is HomeAction.Load -> loadData()
-            is HomeAction.ChangeTab -> _state.update { it.copy(selectedRoomId = action.roomId) }
+           /* is HomeAction.ChangeTab -> _state.update { it.copy(selectedRoomId = action.roomId) }
 
             is HomeAction.ToggleLamp ->
                 updateLamp(action.lampId, action.isOn)
@@ -62,7 +63,7 @@ class HomeViewModel(
                 deleteRoom(action.roomId)
 
             is HomeAction.AddDevice ->
-                addDevice(action.roomId, action.kind, action.name)
+                addDevice(action.roomId, action.kind, action.name) */
         }
     }
 
@@ -72,7 +73,7 @@ class HomeViewModel(
         _state.update { it.copy(isLoading = true, error = null) }
         try {
             val rooms = repository.getRooms()
-            val devices = repository.getDevices()
+            val devices = FakeDevicesDatabase.getDevices() //repository.getDevices()
             _state.update {
                 it.copy(
                     isLoading = false,
@@ -87,7 +88,7 @@ class HomeViewModel(
         }
     }
 
-    private fun observeRemoteSnapshots() = viewModelScope.launch {
+   /* private fun observeRemoteSnapshots() = viewModelScope.launch {
 
         repository.subscribeDevicesSnapshots(this) { rooms, devices ->
             Log.d("HomeViewModel", rooms.toString() + devices.toString())
@@ -208,5 +209,5 @@ class HomeViewModel(
             }
             state.copy(devices = list)
         }
-    }
+    }*/
 }

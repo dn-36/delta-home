@@ -59,22 +59,19 @@ import kotlin.math.roundToInt
             )
         }
 
-        // Комнаты — свайп ВНИЗ, в фоне снизу показываем корзину
         items(rooms, key = { it.id }) { room ->
             var offsetY by remember { mutableStateOf(0f) }
 
-            // Максимальный сдвиг вниз и порог удаления
             val maxOffset = 140f
             val deleteThreshold = 80f
             val progress = (offsetY / deleteThreshold)
-                .coerceIn(0f, 1f) // 0..1 — для альфы корзины
+                .coerceIn(0f, 1f)
 
             Box(
                 modifier = Modifier
-                    // фиксированная высота под чип + зона для свайпа вниз
                     .height(40.dp + 32.dp)
             ) {
-                // Фон c корзиной снизу
+
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = null,
@@ -83,7 +80,6 @@ import kotlin.math.roundToInt
                         .align(Alignment.TopCenter)
                 )
 
-                // Сам чип, который тянем вниз
                 Box(
                     modifier = Modifier
                         .padding()
@@ -93,17 +89,17 @@ import kotlin.math.roundToInt
                             detectVerticalDragGestures(
                                 onVerticalDrag = { change, dragAmount ->
                                     change.consume()
-                                    // тянем вниз: offsetY растёт
+
                                     val newOffset = offsetY + dragAmount
                                     offsetY = newOffset
                                         .coerceIn(0f, maxOffset)
                                 },
                                 onDragEnd = {
                                     if (offsetY >= deleteThreshold) {
-                                        // достаточно стянули вниз — удаляем комнату
+
                                         onDeleteRoom(room.id)
                                     } else {
-                                        // возвращаем на место
+
                                         offsetY = 0f
                                     }
                                 },
