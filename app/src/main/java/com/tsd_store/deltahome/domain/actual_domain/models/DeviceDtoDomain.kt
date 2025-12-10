@@ -1,10 +1,10 @@
-package com.tsd_store.deltahome.data.remote.actual_remote
+package com.tsd_store.deltahome.domain.actual_domain.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @kotlinx.serialization.Serializable
-data class DeviceDto(
+data class DeviceDtoDomain(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("ui") val ui: String,
@@ -14,22 +14,22 @@ data class DeviceDto(
     @SerialName("token") val token: String,
     @SerialName("status") val status: String,
     @SerialName("alarm") val alarm: String,
-    @SerialName("type") val type: DeviceTypeDto
+    @SerialName("type") val type: DeviceTypeDtoDomain
 )
 
 @kotlinx.serialization.Serializable
-data class DeviceTypeDto(
+data class DeviceTypeDtoDomain(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("system_name") val systemName: String? = null,
-    @SerialName("fields") val fields: List<DeviceFieldDto>,
-    @SerialName("actions") val actions: List<DeviceActionDto> = emptyList()
+    @SerialName("fields") val fields: List<DeviceFieldDtoDomain>,
+    @SerialName("actions") val actions: List<DeviceActionDtoDomain> = emptyList()
 )
 
 @kotlinx.serialization.Serializable
-data class DeviceFieldDto(
+data class DeviceFieldDtoDomain(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("type") val type: String,
@@ -37,18 +37,18 @@ data class DeviceFieldDto(
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("unit_id") val unitId: Int? = null,
-    @SerialName("unit") val unit: UnitDto? = null
+    @SerialName("unit") val unit: UnitDtoDomain? = null
 )
 
 // сейчас actions пустые, но тип всё равно делаем
 @kotlinx.serialization.Serializable
-data class DeviceActionDto(
+data class DeviceActionDtoDomain(
     @SerialName("id") val id: Int? = null,
     @SerialName("name") val name: String? = null
 )
 
 @Serializable
-data class UnitDto(
+data class UnitDtoDomain(
     @SerialName("id") val id: Int,
     @SerialName("name") val name: String,
     @SerialName("ui") val ui: String? = null,
@@ -56,4 +56,4 @@ data class UnitDto(
     @SerialName("updated_at") val updatedAt: String
 )
 
-typealias DevicesResponse = List<DeviceDto>
+typealias DevicesResponseDomain = List<DeviceDtoDomain>

@@ -1,5 +1,10 @@
 package com.tsd_store.deltahome.data.remote.actual_remote
 
+import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceDto
+import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceFieldDto
+import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceTypeDto
+import com.tsd_store.deltahome.data.remote.actual_remote.models.UnitDto
+
 object FakeDevicesDatabase {
 
     fun getDevices(): List<DeviceDto> = listOf(

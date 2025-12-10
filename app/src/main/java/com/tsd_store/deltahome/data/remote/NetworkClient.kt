@@ -1,4 +1,4 @@
-package com.tsd_store.deltahome.data.remote.old_remote
+package com.tsd_store.deltahome.data.remote
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine

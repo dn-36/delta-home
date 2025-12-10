@@ -12,6 +12,7 @@ import com.tsd_store.deltahome.common.network.NetworkError
 import com.tsd_store.deltahome.common.network.ResultNetwork
 import com.tsd_store.deltahome.common.network.makeRequest
 import com.tsd_store.deltahome.common.network.onSuccess
+import com.tsd_store.deltahome.data.remote.NetworkClient
 import com.tsd_store.deltahome.data.remote.old_remote.models.SmartHomeSnapshotDto
 import io.ktor.http.HttpMethod
 import kotlinx.serialization.SerializationException
