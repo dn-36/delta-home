@@ -108,13 +108,13 @@ fun AddDeviceCard(
             },
             confirmButton = {
                 TextButton(onClick = {
-                    onAction(
+                   /* onAction(
                         HomeAction.AddDevice(
                             roomId = roomId,
                             kind = selectedKind,
                             name = name.trim()
                         )
-                    )
+                    )*/
                     // сброс и закрытие
                     name = ""
                     selectedKind = DeviceKind.LAMP

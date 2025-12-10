@@ -1,5 +1,6 @@
 package com.tsd_store.deltahome.data.remote.actual_remote
 
+import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceActionDto
 import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceDto
 import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceFieldDto
 import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceTypeDto
@@ -7,31 +8,104 @@ import com.tsd_store.deltahome.data.remote.actual_remote.models.UnitDto
 
 object FakeDevicesDatabase {
 
+
     fun getDevices(): List<DeviceDto> = listOf(
+        // id = 6
         DeviceDto(
-            id = 1,
-            name = "test",
-            ui = "pf6n-r1dz-dr17",
-            createdAt = "2025-02-10T20:18:28.000000Z",
-            updatedAt = "2025-10-21T15:53:11.000000Z",
-            typeId = 6,
-            token = "iw6b-pg80-5d1g",
+            id = 6,
+            name = "GPS Датчик",
+            ui = "ex3i-fq2g-krud",
+            createdAt = "2025-12-07T03:13:05.000000Z",
+            updatedAt = "2025-12-07T03:13:05.000000Z",
+            typeId = 4,
+            token = "3paw-2ymg-467i",
             status = "no_work",
             alarm = "no",
             type = DeviceTypeDto(
-                id = 6,
-                name = "Датчик задымленности",
-                createdAt = "2025-03-05T17:09:59.000000Z",
-                updatedAt = "2025-03-05T17:09:59.000000Z",
+                id = 4,
+                name = "Счетчик электроэнергии",
+                createdAt = "2025-03-05T17:08:20.000000Z",
+                updatedAt = "2025-03-05T17:08:20.000000Z",
                 systemName = null,
                 fields = listOf(
                     DeviceFieldDto(
-                        id = 9,
-                        name = "Аларм",
+                        id = 5,
+                        name = "С1",
                         type = "string",
-                        deviceTypeId = 6,
-                        createdAt = "2025-03-05T17:09:59.000000Z",
-                        updatedAt = "2025-03-05T17:09:59.000000Z",
+                        deviceTypeId = 4,
+                        createdAt = "2025-03-05T17:08:20.000000Z",
+                        updatedAt = "2025-03-05T17:08:35.000000Z",
+                        unitId = 7,
+                        unit = UnitDto(
+                            id = 7,
+                            name = "кВт",
+                            ui = null,
+                            createdAt = "2025-03-05T17:08:28.000000Z",
+                            updatedAt = "2025-03-05T17:08:28.000000Z"
+                        )
+                    ),
+                    DeviceFieldDto(
+                        id = 6,
+                        name = "С2",
+                        type = "string",
+                        deviceTypeId = 4,
+                        createdAt = "2025-03-05T17:08:20.000000Z",
+                        updatedAt = "2025-03-05T17:08:35.000000Z",
+                        unitId = 7,
+                        unit = UnitDto(
+                            id = 7,
+                            name = "кВт",
+                            ui = null,
+                            createdAt = "2025-03-05T17:08:28.000000Z",
+                            updatedAt = "2025-03-05T17:08:28.000000Z"
+                        )
+                    ),
+                    DeviceFieldDto(
+                        id = 7,
+                        name = "С3",
+                        type = "string",
+                        deviceTypeId = 4,
+                        createdAt = "2025-03-05T17:08:20.000000Z",
+                        updatedAt = "2025-03-05T17:08:35.000000Z",
+                        unitId = 7,
+                        unit = UnitDto(
+                            id = 7,
+                            name = "кВт",
+                            ui = null,
+                            createdAt = "2025-03-05T17:08:28.000000Z",
+                            updatedAt = "2025-03-05T17:08:28.000000Z"
+                        )
+                    )
+                ),
+                actions = emptyList()
+            )
+        ),
+
+        // id = 13
+        DeviceDto(
+            id = 13,
+            name = "датчик влажности",
+            ui = "nwu5-kdzr-ups9",
+            createdAt = "2025-12-10T01:11:52.000000Z",
+            updatedAt = "2025-12-10T01:11:52.000000Z",
+            typeId = 2,
+            token = "1w76-d6tb-zcbm",
+            status = "no_work",
+            alarm = "no",
+            type = DeviceTypeDto(
+                id = 2,
+                name = "Датчик влажности",
+                createdAt = "2025-03-05T17:06:43.000000Z",
+                updatedAt = "2025-03-05T17:06:43.000000Z",
+                systemName = null,
+                fields = listOf(
+                    DeviceFieldDto(
+                        id = 2,
+                        name = "влажность",
+                        type = "string",
+                        deviceTypeId = 2,
+                        createdAt = "2025-03-05T17:06:43.000000Z",
+                        updatedAt = "2025-03-05T17:06:43.000000Z",
                         unitId = 1,
                         unit = UnitDto(
                             id = 1,
@@ -46,14 +120,54 @@ object FakeDevicesDatabase {
             )
         ),
 
+        // id = 14
         DeviceDto(
-            id = 3,
-            name = "Тестовый",
-            ui = "t73n-h6x1-ofq1",
-            createdAt = "2025-03-14T12:51:53.000000Z",
-            updatedAt = "2025-10-21T15:53:11.000000Z",
+            id = 14,
+            name = "test",
+            ui = "bc47-826o-zqha",
+            createdAt = "2025-12-10T01:12:23.000000Z",
+            updatedAt = "2025-12-10T01:18:03.000000Z",
+            typeId = 2,
+            token = "u1tz-x4on-zvb3",
+            status = "work",
+            alarm = "yes",
+            type = DeviceTypeDto(
+                id = 2,
+                name = "Датчик влажности",
+                createdAt = "2025-03-05T17:06:43.000000Z",
+                updatedAt = "2025-03-05T17:06:43.000000Z",
+                systemName = null,
+                fields = listOf(
+                    DeviceFieldDto(
+                        id = 2,
+                        name = "влажность",
+                        type = "string",
+                        deviceTypeId = 2,
+                        createdAt = "2025-03-05T17:06:43.000000Z",
+                        updatedAt = "2025-03-05T17:06:43.000000Z",
+                        unitId = 1,
+                        unit = UnitDto(
+                            id = 1,
+                            name = "шт",
+                            ui = null,
+                            createdAt = "2025-02-09T10:07:22.000000Z",
+                            updatedAt = "2025-02-09T10:07:22.000000Z"
+                        )
+                    )
+                ),
+                actions = emptyList()
+            )
+        ),
+
+        // id = 15
+        DeviceDto(
+            id = 15,
+            name = "Датчик ток - напляжения",
+            ui = "omwu-l4kd-z9hv",
+            createdAt = "2025-12-10T01:12:35.000000Z",
+            updatedAt = "2025-12-10T01:12:35.000000Z",
             typeId = 3,
-            token = "qf1c-rmfb-cauh",
+            token = "1x9e-q2r3-xp0h",
             status = "no_work",
             alarm = "no",
             type = DeviceTypeDto(
@@ -100,37 +214,70 @@ object FakeDevicesDatabase {
             )
         ),
 
+        // id = 16
         DeviceDto(
-            id = 4,
-            name = "xxcxzc",
-            ui = "g71f-dbi8-sovn",
-            createdAt = "2025-10-27T10:57:58.000000Z",
-            updatedAt = "2025-10-27T10:57:58.000000Z",
-            typeId = 1,
-            token = "qcal-3pd9-0tp4",
+            id = 16,
+            name = "счетчик электроэнергии",
+            ui = "dxzc-skxb-3gaq",
+            createdAt = "2025-12-10T01:13:02.000000Z",
+            updatedAt = "2025-12-10T01:13:02.000000Z",
+            typeId = 4,
+            token = "628b-vacf-jn8e",
             status = "no_work",
             alarm = "no",
             type = DeviceTypeDto(
-                id = 1,
-                name = "GPS Датчик",
-                createdAt = "2025-03-05T17:06:24.000000Z",
-                updatedAt = "2025-03-05T17:06:24.000000Z",
+                id = 4,
+                name = "Счетчик электроэнергии",
+                createdAt = "2025-03-05T17:08:20.000000Z",
+                updatedAt = "2025-03-05T17:08:20.000000Z",
                 systemName = null,
                 fields = listOf(
                     DeviceFieldDto(
-                        id = 1,
-                        name = "кооржинаты",
-                        type = "integer",
-                        deviceTypeId = 1,
-                        createdAt = "2025-03-05T17:06:24.000000Z",
-                        updatedAt = "2025-12-07T02:09:33.000000Z",
-                        unitId = 1,
+                        id = 5,
+                        name = "С1",
+                        type = "string",
+                        deviceTypeId = 4,
+                        createdAt = "2025-03-05T17:08:20.000000Z",
+                        updatedAt = "2025-03-05T17:08:35.000000Z",
+                        unitId = 7,
                         unit = UnitDto(
-                            id = 1,
-                            name = "шт",
+                            id = 7,
+                            name = "кВт",
                             ui = null,
-                            createdAt = "2025-02-09T10:07:22.000000Z",
-                            updatedAt = "2025-02-09T10:07:22.000000Z"
+                            createdAt = "2025-03-05T17:08:28.000000Z",
+                            updatedAt = "2025-03-05T17:08:28.000000Z"
+                        )
+                    ),
+                    DeviceFieldDto(
+                        id = 6,
+                        name = "С2",
+                        type = "string",
+                        deviceTypeId = 4,
+                        createdAt = "2025-03-05T17:08:20.000000Z",
+                        updatedAt = "2025-03-05T17:08:35.000000Z",
+                        unitId = 7,
+                        unit = UnitDto(
+                            id = 7,
+                            name = "кВт",
+                            ui = null,
+                            createdAt = "2025-03-05T17:08:28.000000Z",
+                            updatedAt = "2025-03-05T17:08:28.000000Z"
+                        )
+                    ),
+                    DeviceFieldDto(
+                        id = 7,
+                        name = "С3",
+                        type = "string",
+                        deviceTypeId = 4,
+                        createdAt = "2025-03-05T17:08:20.000000Z",
+                        updatedAt = "2025-03-05T17:08:35.000000Z",
+                        unitId = 7,
+                        unit = UnitDto(
+                            id = 7,
+                            name = "кВт",
+                            ui = null,
+                            createdAt = "2025-03-05T17:08:28.000000Z",
+                            updatedAt = "2025-03-05T17:08:28.000000Z"
                         )
                     )
                 ),
@@ -138,14 +285,15 @@ object FakeDevicesDatabase {
             )
         ),
 
+        // id = 17
         DeviceDto(
-            id = 5,
-            name = "домофон",
-            ui = "deum-cfby-vync",
-            createdAt = "2025-10-27T17:02:27.000000Z",
-            updatedAt = "2025-10-27T17:02:27.000000Z",
+            id = 17,
+            name = "Датчик потока",
+            ui = "905c-o067-gie0",
+            createdAt = "2025-12-10T01:13:34.000000Z",
+            updatedAt = "2025-12-10T01:13:34.000000Z",
             typeId = 5,
-            token = "wt7e-9ksr-h6g5",
+            token = "bcml-fsyi-ohn5",
             status = "no_work",
             alarm = "no",
             type = DeviceTypeDto(
@@ -176,69 +324,38 @@ object FakeDevicesDatabase {
             )
         ),
 
+        // id = 18
         DeviceDto(
-            id = 6,
-            name = "GPS Датчик",
-            ui = "ex3i-fq2g-krud",
-            createdAt = "2025-12-07T03:13:05.000000Z",
-            updatedAt = "2025-12-07T03:13:05.000000Z",
-            typeId = 4,
-            token = "3paw-2ymg-467i",
+            id = 18,
+            name = "Датчик задымленности",
+            ui = "hxfs-jlfb-y6un",
+            createdAt = "2025-12-10T01:13:53.000000Z",
+            updatedAt = "2025-12-10T01:13:53.000000Z",
+            typeId = 6,
+            token = "lsko-viex-u3lw",
             status = "no_work",
             alarm = "no",
             type = DeviceTypeDto(
-                id = 4,
-                name = "Счетчик элетроэнергии",
-                createdAt = "2025-03-05T17:08:20.000000Z",
-                updatedAt = "2025-03-05T17:08:20.000000Z",
+                id = 6,
+                name = "Датчик задымленности",
+                createdAt = "2025-03-05T17:09:59.000000Z",
+                updatedAt = "2025-03-05T17:09:59.000000Z",
                 systemName = null,
                 fields = listOf(
                     DeviceFieldDto(
-                        id = 5,
-                        name = "Т1",
+                        id = 9,
+                        name = "Аларм",
                         type = "string",
-                        deviceTypeId = 4,
-                        createdAt = "2025-03-05T17:08:20.000000Z",
-                        updatedAt = "2025-03-05T17:08:35.000000Z",
-                        unitId = 7,
+                        deviceTypeId = 6,
+                        createdAt = "2025-03-05T17:09:59.000000Z",
+                        updatedAt = "2025-03-05T17:09:59.000000Z",
+                        unitId = 1,
                         unit = UnitDto(
-                            id = 7,
-                            name = "кВт",
+                            id = 1,
+                            name = "шт",
                             ui = null,
-                            createdAt = "2025-03-05T17:08:28.000000Z",
-                            updatedAt = "2025-03-05T17:08:28.000000Z"
-                        )
-                    ),
-                    DeviceFieldDto(
-                        id = 6,
-                        name = "Т2",
-                        type = "string",
-                        deviceTypeId = 4,
-                        createdAt = "2025-03-05T17:08:20.000000Z",
-                        updatedAt = "2025-03-05T17:08:35.000000Z",
-                        unitId = 7,
-                        unit = UnitDto(
-                            id = 7,
-                            name = "кВт",
-                            ui = null,
-                            createdAt = "2025-03-05T17:08:28.000000Z",
-                            updatedAt = "2025-03-05T17:08:28.000000Z"
-                        )
-                    ),
-                    DeviceFieldDto(
-                        id = 7,
-                        name = "Т3",
-                        type = "string",
-                        deviceTypeId = 4,
-                        createdAt = "2025-03-05T17:08:20.000000Z",
-                        updatedAt = "2025-03-05T17:08:35.000000Z",
-                        unitId = 7,
-                        unit = UnitDto(
-                            id = 7,
-                            name = "кВт",
-                            ui = null,
-                            createdAt = "2025-03-05T17:08:28.000000Z",
-                            updatedAt = "2025-03-05T17:08:28.000000Z"
+                            createdAt = "2025-02-09T10:07:22.000000Z",
+                            updatedAt = "2025-02-09T10:07:22.000000Z"
                         )
                     )
                 ),
@@ -246,14 +363,123 @@ object FakeDevicesDatabase {
             )
         ),
 
+        // id = 19
         DeviceDto(
-            id = 7,
-            name = "p1",
-            ui = "al9b-2s56-3lg6",
-            createdAt = "2025-12-09T03:56:30.000000Z",
-            updatedAt = "2025-12-09T03:56:30.000000Z",
+            id = 19,
+            name = "Датчик пожарный, газа, утечки и пр.",
+            ui = "y05d-jqbc-h5n1",
+            createdAt = "2025-12-10T01:18:28.000000Z",
+            updatedAt = "2025-12-10T01:18:28.000000Z",
+            typeId = 7,
+            token = "1jlv-xvry-icap",
+            status = "no_work",
+            alarm = "no",
+            type = DeviceTypeDto(
+                id = 7,
+                name = "Датчик пожарный, газа, утечки и пр.",
+                createdAt = "2025-12-03T13:15:19.000000Z",
+                updatedAt = "2025-12-03T13:15:19.000000Z",
+                systemName = "sensor_work_and_alarm",
+                fields = emptyList(),
+                actions = emptyList()
+            )
+        ),
+
+        // id = 20
+        DeviceDto(
+            id = 20,
+            name = "счетчик воды",
+            ui = "pzgn-tbng-6ngz",
+            createdAt = "2025-12-10T01:20:09.000000Z",
+            updatedAt = "2025-12-10T01:20:09.000000Z",
+            typeId = 8,
+            token = "plch-6m3q-s81n",
+            status = "no_work",
+            alarm = "no",
+            type = DeviceTypeDto(
+                id = 8,
+                name = "Счетчик воды",
+                createdAt = "2025-12-03T13:15:19.000000Z",
+                updatedAt = "2025-12-03T13:15:19.000000Z",
+                systemName = "sensor_water",
+                fields = listOf(
+                    DeviceFieldDto(
+                        id = 10,
+                        name = "Показание",
+                        type = "integer",
+                        deviceTypeId = 8,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z",
+                        unitId = null,
+                        unit = null
+                    )
+                ),
+                actions = emptyList()
+            )
+        ),
+
+        // id = 21
+        DeviceDto(
+            id = 21,
+            name = "3-х тарифный счетчик",
+            ui = "6km2-ws9x-gh52",
+            createdAt = "2025-12-10T01:20:36.000000Z",
+            updatedAt = "2025-12-10T01:20:36.000000Z",
+            typeId = 9,
+            token = "ytas-ekif-wl9j",
+            status = "no_work",
+            alarm = "no",
+            type = DeviceTypeDto(
+                id = 9,
+                name = "3-х тарифный счетчик",
+                createdAt = "2025-12-03T13:15:19.000000Z",
+                updatedAt = "2025-12-03T13:15:19.000000Z",
+                systemName = "sensor_tree_data",
+                fields = listOf(
+                    DeviceFieldDto(
+                        id = 11,
+                        name = "Показание 1",
+                        type = "integer",
+                        deviceTypeId = 9,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z",
+                        unitId = null,
+                        unit = null
+                    ),
+                    DeviceFieldDto(
+                        id = 12,
+                        name = "Показание 2",
+                        type = "integer",
+                        deviceTypeId = 9,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z",
+                        unitId = null,
+                        unit = null
+                    ),
+                    DeviceFieldDto(
+                        id = 13,
+                        name = "Показание 3",
+                        type = "integer",
+                        deviceTypeId = 9,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z",
+                        unitId = null,
+                        unit = null
+                    )
+                ),
+                actions = emptyList()
+            )
+        ),
+
+        // id = 22
+        DeviceDto(
+            id = 22,
+            name = "Трекер координат",
+            ui = "1oup-s9yr-zhwf",
+            createdAt = "2025-12-10T01:20:59.000000Z",
+            updatedAt = "2025-12-10T01:20:59.000000Z",
             typeId = 10,
-            token = "s8xr-m24a-w2rn",
+            token = "4a83-r6x4-8b1i",
             status = "no_work",
             alarm = "no",
             type = DeviceTypeDto(
@@ -285,6 +511,124 @@ object FakeDevicesDatabase {
                     )
                 ),
                 actions = emptyList()
+            )
+        ),
+
+        // id = 23
+        DeviceDto(
+            id = 23,
+            name = "Управляемое освещение",
+            ui = "1mvp-ra5j-h4j2",
+            createdAt = "2025-12-10T01:21:26.000000Z",
+            updatedAt = "2025-12-10T01:21:26.000000Z",
+            typeId = 11,
+            token = "lim0-ewdu-rqx2",
+            status = "no_work",
+            alarm = "no",
+            type = DeviceTypeDto(
+                id = 11,
+                name = "Управляемое освещение",
+                createdAt = "2025-12-03T13:15:19.000000Z",
+                updatedAt = "2025-12-03T13:15:19.000000Z",
+                systemName = "sensor_light",
+                fields = listOf(
+                    DeviceFieldDto(
+                        id = 16,
+                        name = "Яркость(процент)",
+                        type = "integer",
+                        deviceTypeId = 11,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z",
+                        unitId = null,
+                        unit = null
+                    ),
+                    DeviceFieldDto(
+                        id = 17,
+                        name = "Вкл./Выкл.",
+                        type = "bool",
+                        deviceTypeId = 11,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z",
+                        unitId = null,
+                        unit = null
+                    )
+                ),
+                actions = listOf(
+                    DeviceActionDto(
+                        id = 1,
+                        name = "Увеличить яркость",
+                        command = "add_light",
+                        ui = "18dg-jf3t-cgbl",
+                        deviceFieldId = 16,
+                        deviceTypeId = 11,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z"
+                    ),
+                    DeviceActionDto(
+                        id = 2,
+                        name = "Уменьшить яркость",
+                        command = "cut_light",
+                        ui = "wgnj-9xtn-npa3",
+                        deviceFieldId = 16,
+                        deviceTypeId = 11,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z"
+                    ),
+                    DeviceActionDto(
+                        id = 3,
+                        name = "Вкл./Выкл.",
+                        command = "on_off",
+                        ui = "ck0v-jnpo-46mx",
+                        deviceFieldId = 17,
+                        deviceTypeId = 11,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z"
+                    )
+                )
+            )
+        ),
+
+        // id = 24
+        DeviceDto(
+            id = 24,
+            name = "задвижка",
+            ui = "hafj-rbtc-kxpw",
+            createdAt = "2025-12-10T01:21:45.000000Z",
+            updatedAt = "2025-12-10T01:21:45.000000Z",
+            typeId = 12,
+            token = "rtmb-y1d4-x7be",
+            status = "no_work",
+            alarm = "no",
+            type = DeviceTypeDto(
+                id = 12,
+                name = "Задвижка",
+                createdAt = "2025-12-03T13:15:19.000000Z",
+                updatedAt = "2025-12-03T13:15:19.000000Z",
+                systemName = "sensor_gate",
+                fields = listOf(
+                    DeviceFieldDto(
+                        id = 18,
+                        name = "Открыта/Закрыта",
+                        type = "bool",
+                        deviceTypeId = 12,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z",
+                        unitId = null,
+                        unit = null
+                    )
+                ),
+                actions = listOf(
+                    DeviceActionDto(
+                        id = 4,
+                        name = "Открыть/Закрыть",
+                        command = "on_off",
+                        ui = "6fik-ys1t-x6ef",
+                        deviceFieldId = 18,
+                        deviceTypeId = 12,
+                        createdAt = "2025-12-03T13:15:19.000000Z",
+                        updatedAt = "2025-12-03T13:15:19.000000Z"
+                    )
+                )
             )
         )
     )

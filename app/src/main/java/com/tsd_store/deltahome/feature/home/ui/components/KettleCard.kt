@@ -47,12 +47,12 @@ fun KettleCard(device: KettleDevice, onAction: (HomeAction) -> Unit) {
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onAction(
+                      /*  onAction(
                             HomeAction.ChangeKettleTemperature(
                                 device.token,
                                 localTemp.toInt()
                             )
-                        )
+                        )*/
                         showTempDialog = false
                     }
                 ) {
@@ -73,7 +73,9 @@ fun KettleCard(device: KettleDevice, onAction: (HomeAction) -> Unit) {
         trailing = {
             Switch(
                 checked = device.isOn,
-                onCheckedChange = { onAction(HomeAction.ToggleKettle(device.token, it)) }
+                onCheckedChange = {
+                 //   onAction(HomeAction.ToggleKettle(device.token, it))
+                }
             )
         },
         footer = {

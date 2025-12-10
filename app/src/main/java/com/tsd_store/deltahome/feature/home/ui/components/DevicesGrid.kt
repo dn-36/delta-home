@@ -13,16 +13,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceDto
+
+
 import com.tsd_store.deltahome.feature.home.viewmodel.HomeAction
-import com.tsd_store.deltahome.domain.old_domain.model.Device
-import com.tsd_store.deltahome.domain.old_domain.model.KettleDevice
-import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
-import com.tsd_store.deltahome.domain.old_domain.model.LockDevice
-import com.tsd_store.deltahome.domain.old_domain.model.SensorDevice
+import com.tsd_store.deltahome.domain.old_domain.model.TypesDevices
 
 @Composable
 fun DevicesGrid(
-    devices: List<Device>,
+    devices: List<DeviceDto>,
     selectedRoomId: String?,
     onAction: (HomeAction) -> Unit
 ) {
@@ -48,11 +47,18 @@ fun DevicesGrid(
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(devices, key = { it.token }) { device ->
-                when (device) {
+              /*  when (device.name) {
                     is SensorDevice -> SensorCard(device)
                     is LampDevice -> LampCard(device, onAction)
                     is KettleDevice -> KettleCard(device, onAction)
                     is LockDevice -> LockCard(device, onAction)
+                }*/
+                when (device.name) {
+                    TypesDevices.COORDINATE_TRACKER.name -> {}
+                    TypesDevices.THREE_TARIFF_METER.name -> {}
+                    TypesDevices.CONTROLLED_LIGHTING.name -> {}
+                    TypesDevices.WATER_METER.name -> SensorCard(device)
+
                 }
             }
 

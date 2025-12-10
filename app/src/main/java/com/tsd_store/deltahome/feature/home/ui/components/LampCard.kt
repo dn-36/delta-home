@@ -48,12 +48,12 @@ import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
             confirmButton = {
                 TextButton(
                     onClick = {
-                        onAction(
+                   /*     onAction(
                             HomeAction.ChangeLampBrightness(
                                 device.token,
                                 localValue.toInt()
                             )
-                        )
+                        )*/
                         showDialog = false
                     }
                 ) {
@@ -76,7 +76,9 @@ import com.tsd_store.deltahome.domain.old_domain.model.LampDevice
         trailing = {
             Switch(
                 checked = device.isOn,
-                onCheckedChange = { onAction(HomeAction.ToggleLamp(device.token, it)) }
+                onCheckedChange = {
+                 //   onAction(HomeAction.ToggleLamp(device.token, it))
+                }
             )
         },
         footer = {

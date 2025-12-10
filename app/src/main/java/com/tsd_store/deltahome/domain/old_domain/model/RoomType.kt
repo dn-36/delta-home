@@ -64,3 +64,11 @@ data class Room(
     val id: String,
     val name: String
 )
+
+enum class TypesDevices(name : String) {
+    WATER_METER("Счетчик воды"),
+    THREE_TARIFF_METER("3-х тарифный счетчик"),
+    COORDINATE_TRACKER("Трекер координат"),
+    CONTROLLED_LIGHTING("Управляемое освещение")
+
+}

@@ -1,6 +1,6 @@
 package com.tsd_store.deltahome.feature.home.viewmodel
 
-import com.tsd_store.deltahome.data.remote.actual_remote.DeviceDto
+import com.tsd_store.deltahome.data.remote.actual_remote.models.DeviceDto
 import com.tsd_store.deltahome.domain.old_domain.model.Device
 import com.tsd_store.deltahome.domain.old_domain.model.DeviceKind
 import com.tsd_store.deltahome.domain.old_domain.model.Room
@@ -41,7 +41,7 @@ data class HomeState(
     val error: String? = null,
 
     val rooms: List<Room> = emptyList(),
-    val selectedRoomId: String? = null,   // null -> Favorites tab
+    val selectedRoomId: String? = null,
 
     val devices: List<DeviceDto> = emptyList()
 )

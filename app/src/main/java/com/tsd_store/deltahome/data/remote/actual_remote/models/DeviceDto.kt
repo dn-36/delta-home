@@ -3,57 +3,63 @@ package com.tsd_store.deltahome.data.remote.actual_remote.models
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class DeviceDto(
-    @SerialName("id") val id: Int,
-    @SerialName("name") val name: String,
-    @SerialName("ui") val ui: String,
+    val id: Int,
+    val name: String,
+    val ui: String,
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("type_id") val typeId: Int,
-    @SerialName("token") val token: String,
-    @SerialName("status") val status: String,
-    @SerialName("alarm") val alarm: String,
-    @SerialName("type") val type: DeviceTypeDto
+    val token: String,
+    val status: String,
+    val alarm: String,
+    val type: DeviceTypeDto
 )
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class DeviceTypeDto(
-    @SerialName("id") val id: Int,
-    @SerialName("name") val name: String,
+    val id: Int,
+    val name: String,
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("system_name") val systemName: String? = null,
-    @SerialName("fields") val fields: List<DeviceFieldDto>,
-    @SerialName("actions") val actions: List<DeviceActionDto> = emptyList()
+    val fields: List<DeviceFieldDto> = emptyList(),
+    val actions: List<DeviceActionDto> = emptyList()
 )
 
-@kotlinx.serialization.Serializable
+@Serializable
 data class DeviceFieldDto(
-    @SerialName("id") val id: Int,
-    @SerialName("name") val name: String,
-    @SerialName("type") val type: String,
+    val id: Int,
+    val name: String,
+    val type: String,
     @SerialName("device_type_id") val deviceTypeId: Int,
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String,
     @SerialName("unit_id") val unitId: Int? = null,
-    @SerialName("unit") val unit: UnitDto? = null
-)
-
-// сейчас actions пустые, но тип всё равно делаем
-@kotlinx.serialization.Serializable
-data class DeviceActionDto(
-    @SerialName("id") val id: Int? = null,
-    @SerialName("name") val name: String? = null
+    val unit: UnitDto? = null
 )
 
 @Serializable
 data class UnitDto(
-    @SerialName("id") val id: Int,
-    @SerialName("name") val name: String,
-    @SerialName("ui") val ui: String? = null,
+    val id: Int,
+    val name: String,
+    val ui: String? = null,
+    @SerialName("created_at") val createdAt: String,
+    @SerialName("updated_at") val updatedAt: String
+)
+
+@Serializable
+data class DeviceActionDto(
+    val id: Int,
+    val name: String,
+    val command: String,
+    val ui: String,
+    @SerialName("device_field_id") val deviceFieldId: Int,
+    @SerialName("device_type_id") val deviceTypeId: Int,
     @SerialName("created_at") val createdAt: String,
     @SerialName("updated_at") val updatedAt: String
 )
 
 typealias DevicesResponse = List<DeviceDto>
+

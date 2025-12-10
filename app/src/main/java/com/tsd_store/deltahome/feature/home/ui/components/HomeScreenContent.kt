@@ -61,7 +61,7 @@ fun HomeScreenContent(
                 TextButton(onClick = {
                     val name = newRoomName.trim()
                     if (name.isNotEmpty()) {
-                        onAction(HomeAction.AddRoom(name))
+                       // onAction(HomeAction.AddRoom(name))
                         newRoomName = ""
                         showAddRoomDialog = false
                     }
@@ -114,7 +114,7 @@ fun HomeScreenContent(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    androidx.compose.material3.CircularProgressIndicator()
+                    CircularProgressIndicator()
                 }
             } else {
                 DevicesGrid(

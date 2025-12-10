@@ -16,7 +16,9 @@ import com.tsd_store.deltahome.domain.old_domain.model.LockDevice
         trailing = {
             Switch(
                 checked = device.isLocked,
-                onCheckedChange = { onAction(HomeAction.ToggleLock(device.token, it)) }
+                onCheckedChange = {
+               //     onAction(HomeAction.ToggleLock(device.token, it))
+                }
             )
         },
         modifier = Modifier.height(120.dp)
