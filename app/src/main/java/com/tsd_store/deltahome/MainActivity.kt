@@ -5,7 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import cafe.adriel.voyager.navigator.Navigator
-import com.tsd_store.deltahome.data.remote.old_remote.NetworkClient
+import com.tsd_store.deltahome.data.remote.NetworkClient
 import com.tsd_store.deltahome.feature.home.ui.HomeScreen
 
 class MainActivity : ComponentActivity() {
