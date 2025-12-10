@@ -1,26 +1,26 @@
-package com.tsd_store.deltahome.domain.actual_domain.models
+package com.tsd_store.deltahome.data.remote.actual_remote.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ValueSensorResponseDomain(
+data class ValueSensorResponse(
     val ui: String,
     val name: String,
     @SerialName("fileds")
-    val fields: List<FieldDtoDomain>
+    val fields: List<FieldDto>
 )
 
 @Serializable
-data class FieldDtoDomain(
-    val value: List<FieldValueDomain>,
+data class FieldDto(
+    val value: List<FieldValue>,
     val name: String,
     val type: String,
     val unit: String?
 )
 
 @Serializable
-data class FieldValueDomain(
+data class FieldValue(
     val value: String,
     val date: String
 )

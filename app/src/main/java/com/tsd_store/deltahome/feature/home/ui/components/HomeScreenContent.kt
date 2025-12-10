@@ -140,6 +140,10 @@ fun SensorsActionsSection(
     val sendStatusSensorUseCase: SendStatusSensorUseCase = get()
     val sendValueSensorUseCase: SendValueSensorUseCase = get()
 
+    val ui = "bc47-826o-zqha"
+
+    val token = "u1tz-x4on-zvb3"
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -173,7 +177,7 @@ fun SensorsActionsSection(
         Button(
             onClick = { scope.launch(Dispatchers.IO) {
 
-                getValueSensorUseCase.execute(ui = "t73n-h6x1-ofq1")
+                getValueSensorUseCase.execute(ui = ui)
 
             } },
             modifier = Modifier.fillMaxWidth()
@@ -186,7 +190,13 @@ fun SensorsActionsSection(
         Button(
             onClick = { scope.launch(Dispatchers.IO) {
 
-                getSensorsUseCase.execute()
+                createSensorUseCase.execute(
+
+                    ui = ui,
+
+                    value = listOf("100")
+
+                )
 
             } },
             modifier = Modifier.fillMaxWidth()
@@ -201,7 +211,7 @@ fun SensorsActionsSection(
 
                 sendStatusSensorUseCase.execute(
 
-                    ui = "t73n-h6x1-ofq1", token = "qf1c-rmfb-cauh", status = 1
+                    ui = ui, token = token, status = 1
 
                 )
 
@@ -218,7 +228,7 @@ fun SensorsActionsSection(
 
                 sendAlarmSensorUseCase.execute(
 
-                    ui = "t73n-h6x1-ofq1", token = "qf1c-rmfb-cauh", alarm = 0
+                    ui = ui, token = token, alarm = 1
 
                 )
 
@@ -235,7 +245,7 @@ fun SensorsActionsSection(
 
                 sendValueSensorUseCase.execute(
 
-                    ui = "t73n-h6x1-ofq1", token = "qf1c-rmfb-cauh", value = "250", field_id = "3"
+                    ui = ui, token = token, field_id = "2", value = "250"
 
                 )
 

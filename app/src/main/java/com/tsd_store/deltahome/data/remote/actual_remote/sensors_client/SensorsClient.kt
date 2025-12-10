@@ -5,9 +5,14 @@ import com.tsd_store.deltahome.common.network.ResultNetwork
 import com.tsd_store.deltahome.common.network.makeRequest
 import com.tsd_store.deltahome.common.network.onSuccess
 import com.tsd_store.deltahome.data.remote.NetworkClient
-import com.tsd_store.deltahome.data.remote.actual_remote.DevicesResponse
-import com.tsd_store.deltahome.data.remote.actual_remote.ValueSensorResponse
+import com.tsd_store.deltahome.data.remote.actual_remote.models.CreateSensorRequestModel
+import com.tsd_store.deltahome.data.remote.actual_remote.models.DevicesResponse
+import com.tsd_store.deltahome.data.remote.actual_remote.models.SendAlarmSensorRequestModel
+import com.tsd_store.deltahome.data.remote.actual_remote.models.SendStatusSensorRequestModel
+import com.tsd_store.deltahome.data.remote.actual_remote.models.SendValueSensorRequestModel
+import com.tsd_store.deltahome.data.remote.actual_remote.models.ValueSensorResponse
 import io.ktor.http.HttpMethod
+import kotlinx.serialization.Serializable
 
 class SensorsClient {
 
@@ -65,11 +70,11 @@ class SensorsClient {
 
     ): ResultNetwork<String, NetworkError> {
 
-        val body = mapOf(
+        val body = CreateSensorRequestModel(
 
-            "ui" to ui,
+            ui = ui,
 
-            "value" to value
+            value = value
 
         )
 
@@ -103,13 +108,11 @@ class SensorsClient {
 
     ): ResultNetwork<String, NetworkError> {
 
-        val body = mapOf(
+        val body = SendStatusSensorRequestModel(
 
-            "ui" to ui,
-
-            "token" to token,
-
-            "status" to status
+            ui = ui,
+            token = token,
+            status = status
 
         )
 
@@ -143,13 +146,13 @@ class SensorsClient {
 
     ): ResultNetwork<String, NetworkError> {
 
-        val body = mapOf(
+        val body = SendAlarmSensorRequestModel(
 
-            "ui" to ui,
+            ui = ui,
 
-            "token" to token,
+            token = token,
 
-            "alarm" to alarm
+            alarm = alarm
 
         )
 
@@ -185,15 +188,12 @@ class SensorsClient {
 
     ): ResultNetwork<String, NetworkError> {
 
-        val body = mapOf(
+        val body = SendValueSensorRequestModel(
 
-            "ui" to ui,
-
-            "token" to token,
-
-            "field_id" to field_id,
-
-            "value" to value
+            ui = ui,
+            token = token,
+            field_id = field_id,
+            value = value
 
         )
 
