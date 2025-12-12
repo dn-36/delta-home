@@ -1,38 +1,30 @@
 package com.tsd_store.deltahome.presentation.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.tsd_store.deltahome.presentation.DeviceUiModel
+import com.tsd_store.deltahome.domain.models.Device
 
 @Composable
-fun CoordinateTrackerCard(uiModel: DeviceUiModel) {
-    val device = uiModel.device
+fun CoordinateTrackerCard(device: Device) {
     val latField = device.type.fields.getOrNull(0)
     val lonField = device.type.fields.getOrNull(1)
 
     val lat = latField?.lastValue?.valueText ?: latField?.lastValue?.rawValue ?: "-"
     val lon = lonField?.lastValue?.valueText ?: lonField?.lastValue?.rawValue ?: "-"
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+    BaseDeviceCard(
+        title = device.name,
+        subtitle = "Location"
     ) {
-        Text(device.name, style = MaterialTheme.typography.body1)
-        Text("Тип: ${device.type.name}", style = MaterialTheme.typography.body1)
-        Spacer(Modifier.height(8.dp))
-
-        Text("Широта: $lat")
-        Text("Долгота: $lon")
-        Spacer(Modifier.height(8.dp))
-
+        Text(
+            text = "Coords",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+        Text(
+            text = "$lat, $lon",
+            style = MaterialTheme.typography.bodyMedium
+        )
     }
 }

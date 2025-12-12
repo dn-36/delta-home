@@ -10,10 +10,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.tsd_store.deltahome.domain.models.Device
 import com.tsd_store.deltahome.domain.models.DeviceCategory
 import com.tsd_store.deltahome.presentation.components.ControlledLightingCard
 import com.tsd_store.deltahome.presentation.components.CoordinateTrackerCard
@@ -26,54 +28,52 @@ import com.tsd_store.deltahome.presentation.components.WaterMeterCard
 @Composable
 fun DeviceCard(
     uiModel: DeviceUiModel,
-    onAction: (DevicesAction) -> Unit
+    onAction: (DevicesAction) -> Unit,
+    onShowUnknownDetails: (Device) -> Unit,
+    onShowLightingDialog: (Device) -> Unit
 ) {
     val device = uiModel.device
     val category = uiModel.category
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onAction(DevicesAction.OnDeviceClick(device.id)) },
-        shape = RoundedCornerShape(12.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-        ) {
-            when (category) {
-                DeviceCategory.EMERGENCY_SENSOR ->
-                    EmergencySensorCard(uiModel)
+    Box {
+        when (category) {
+            DeviceCategory.EMERGENCY_SENSOR ->
+                EmergencySensorCard(device)
 
-                DeviceCategory.WATER_METER ->
-                    WaterMeterCard(uiModel)
+            DeviceCategory.WATER_METER ->
+                WaterMeterCard(device)
 
-                DeviceCategory.THREE_TARIFF_METER ->
-                    ThreeTariffMeterCard(uiModel)
+            DeviceCategory.THREE_TARIFF_METER ->
+                ThreeTariffMeterCard(device)
 
-                DeviceCategory.COORDINATE_TRACKER ->
-                    CoordinateTrackerCard(uiModel)
+            DeviceCategory.COORDINATE_TRACKER ->
+                CoordinateTrackerCard(device)
 
-                DeviceCategory.CONTROLLED_LIGHTING ->
-                    ControlledLightingCard(uiModel, onAction)
-
-                DeviceCategory.GATE ->
-                    GateCard(uiModel, onAction)
-
-                DeviceCategory.UNKNOWN ->
-                    UnknownDeviceCard(uiModel, onAction)
-            }
-
-            if (uiModel.isUpdating) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(8.dp)
-                        .size(20.dp),
-                    strokeWidth = 2.dp
+            DeviceCategory.CONTROLLED_LIGHTING ->
+                ControlledLightingCard(
+                    device = device,
+                    onAction = onAction,
+                    onShowDetails = { onShowLightingDialog(device) }
                 )
-            }
+
+            DeviceCategory.GATE ->
+                GateCard(device, onAction)
+
+            DeviceCategory.UNKNOWN ->
+                UnknownDeviceCard(
+                    device = device,
+                    onClick = { onShowUnknownDetails(device) }
+                )
+        }
+
+        if (uiModel.isUpdating) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(8.dp)
+                    .size(18.dp),
+                strokeWidth = 2.dp
+            )
         }
     }
 }

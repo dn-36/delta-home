@@ -1,8 +1,11 @@
 package com.tsd_store.deltahome.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,47 +24,58 @@ import androidx.compose.ui.unit.dp
 fun BaseDeviceCard(
     title: String,
     subtitle: String? = null,
-    footer: (@Composable () -> Unit)? = null,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
-    modifier: Modifier = Modifier
+    content: (@Composable ColumnScope.() -> Unit)? = null
 ) {
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .height(150.dp)
+            .then(
+                if (onClick != null)
+                    Modifier.clickable { onClick() }
+                else
+                    Modifier
+            ),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(14.dp)
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                // Название устройства — как в примере, medium + semibold
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        fontWeight = FontWeight.SemiBold
+                    ),
                     modifier = Modifier.weight(1f)
                 )
                 if (trailing != null) trailing()
             }
-            if (subtitle != null) {
+
+           /* if (subtitle != null) {
                 Spacer(Modifier.height(4.dp))
                 Text(
                     text = subtitle,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
-            }
-            if (footer != null) {
+            }*/
+
+            if (content != null) {
                 Spacer(Modifier.height(10.dp))
-                footer()
+                content()
             }
         }
     }

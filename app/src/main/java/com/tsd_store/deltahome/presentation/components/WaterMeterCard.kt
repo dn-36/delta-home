@@ -1,35 +1,28 @@
 package com.tsd_store.deltahome.presentation.components
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.tsd_store.deltahome.presentation.DeviceUiModel
+import com.tsd_store.deltahome.domain.models.Device
 
 @Composable
-fun WaterMeterCard(uiModel: DeviceUiModel) {
-    val device = uiModel.device
+fun WaterMeterCard(device: Device) {
     val field = device.type.fields.firstOrNull()
     val value = field?.lastValue?.valueNumber ?: field?.lastValue?.rawValue ?: "-"
     val unit = field?.unit?.name ?: ""
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
+    BaseDeviceCard(
+        title = device.name,
+        subtitle = "Water"
     ) {
-        Text(device.name, style = MaterialTheme.typography.body1)
-        Text("Тип: ${device.type.name}", style = MaterialTheme.typography.body1)
-        Spacer(Modifier.height(8.dp))
         Text(
-            text = "Показание: $value $unit",
-            style = MaterialTheme.typography.body1
+            text = "Value",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+        )
+        Text(
+            text = "$value $unit",
+            style = MaterialTheme.typography.titleMedium
         )
     }
 }
