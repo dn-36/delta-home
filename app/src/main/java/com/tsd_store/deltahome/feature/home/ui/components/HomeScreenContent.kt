@@ -188,20 +188,29 @@ fun SensorsActionsSection(
         Spacer(modifier = Modifier.height(4.dp))
 
         Button(
-            onClick = { scope.launch(Dispatchers.IO) {
 
-                createSensorUseCase.execute(
+            onClick = {
 
-                    ui = ui,
+                scope.launch(Dispatchers.IO) {
 
-                    value = listOf("100")
+                    createSensorUseCase.execute(
 
-                )
+                        ui = ui,
 
-            } },
+                        value = listOf("100")
+
+                    )
+
+                }
+
+            },
+
             modifier = Modifier.fillMaxWidth()
+
         ) {
+
             Text("Создать датчик")
+
         }
 
         Spacer(modifier = Modifier.height(4.dp))

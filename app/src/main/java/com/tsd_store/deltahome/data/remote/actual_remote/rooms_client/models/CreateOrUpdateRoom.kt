@@ -1,0 +1,14 @@
+package com.tsd_store.deltahome.data.remote.actual_remote.rooms_client.models
+
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class CreateOrUpdateRoom(
+
+    val token: String,
+
+    val ui: String,
+
+    val name: String
+
+)
