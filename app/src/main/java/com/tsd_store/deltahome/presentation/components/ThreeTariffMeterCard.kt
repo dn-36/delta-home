@@ -1,11 +1,9 @@
 package com.tsd_store.deltahome.presentation.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -17,7 +15,10 @@ import androidx.compose.ui.text.font.FontWeight
 import com.tsd_store.deltahome.domain.models.Device
 
 @Composable
-fun ThreeTariffMeterCard(device: Device) {
+fun ThreeTariffMeterCard(
+    device: Device,
+    onRequestDelete: () -> Unit
+) {
     val fields = device.type.fields.take(3)
 
     BaseDeviceCard(
@@ -41,14 +42,14 @@ fun ThreeTariffMeterCard(device: Device) {
                         text = "$value",
                         style = MaterialTheme.typography.bodySmall
                     )
-                    if(index == 2) {
-                        Spacer(Modifier.width(25.dp).height(1.dp))
-                        Text(
-                            text = unit,
-                            color = Color.Blue,
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
+                    if(index ==2){
+                    Spacer(Modifier.width(20.dp).height(1.dp))
+                    Text(
+                        text = unit,
+                        style = MaterialTheme.typography.bodyMedium ,
+                        color = Color.Blue
+                    )
+                        }
                 }
 
                 if (index < fields.lastIndex) Spacer(Modifier.height(4.dp))
@@ -56,3 +57,4 @@ fun ThreeTariffMeterCard(device: Device) {
         }
     }
 }
+

@@ -1,13 +1,13 @@
 package com.tsd_store.deltahome.domain.models
 
-enum class DeviceCategory {
-    EMERGENCY_SENSOR,      // Датчик пожарный / газа / утечки
-    WATER_METER,           // Счётчик воды
-    THREE_TARIFF_METER,    // 3-х тарифный счётчик
-    COORDINATE_TRACKER,    // Трекер координат
-    CONTROLLED_LIGHTING,   // Управляемое освещение
-    GATE,                  // Задвижка
-    UNKNOWN                // Все остальные кастомные типы
+enum class DeviceCategory(val category : String,val ui : Int) {
+    EMERGENCY_SENSOR("Аварийный датчик",7),
+    WATER_METER("Счётчик воды",8),
+    THREE_TARIFF_METER("3-х тарифный счётчик",9),
+    COORDINATE_TRACKER("Трекер координат",10),
+    CONTROLLED_LIGHTING("Управляемое освещение",11),
+    GATE("Задвижка",12),  // Задвижка
+    UNKNOWN("Устройства",0)
 }
 
 /**

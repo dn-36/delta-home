@@ -1,6 +1,7 @@
 package com.tsd_store.deltahome.presentation.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -20,12 +21,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
+
 @Composable
 fun BaseDeviceCard(
     title: String,
     subtitle: String? = null,
     modifier: Modifier = Modifier,
     onClick: (() -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
     trailing: (@Composable () -> Unit)? = null,
     content: (@Composable ColumnScope.() -> Unit)? = null
 ) {
@@ -33,8 +36,11 @@ fun BaseDeviceCard(
         modifier = modifier
             .height(150.dp)
             .then(
-                if (onClick != null)
-                    Modifier.clickable { onClick() }
+                if (onClick != null || onLongClick != null)
+                    Modifier.combinedClickable(
+                        onClick = { onClick?.invoke() },
+                        onLongClick = { onLongClick?.invoke() }
+                    )
                 else
                     Modifier
             ),
@@ -53,7 +59,6 @@ fun BaseDeviceCard(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Название устройства — как в примере, medium + semibold
                 Text(
                     text = title,
                     style = MaterialTheme.typography.bodyMedium.copy(
@@ -63,15 +68,6 @@ fun BaseDeviceCard(
                 )
                 if (trailing != null) trailing()
             }
-
-           /* if (subtitle != null) {
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-            }*/
 
             if (content != null) {
                 Spacer(Modifier.height(10.dp))

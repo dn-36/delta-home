@@ -14,7 +14,8 @@ import com.tsd_store.deltahome.presentation.DevicesAction
 fun ControlledLightingCard(
     device: Device,
     onAction: (DevicesAction) -> Unit,
-    onShowDetails: () -> Unit
+    onShowDetails: () -> Unit,
+    onRequestDelete: () -> Unit
 ) {
     val boolField = device.type.fields.firstOrNull { it.type == FieldValueType.BOOLEAN }
     val brightnessField = device.type.fields.firstOrNull { it.type == FieldValueType.INTEGER }
@@ -25,7 +26,8 @@ fun ControlledLightingCard(
     BaseDeviceCard(
         title = device.name,
         subtitle = "Light",
-        onClick = onShowDetails,  // открыть диалог настройки
+        onClick = onShowDetails,
+        onLongClick = onRequestDelete,
         trailing = {
             Switch(
                 checked = isOn,

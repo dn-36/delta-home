@@ -6,14 +6,18 @@ import androidx.compose.runtime.Composable
 import com.tsd_store.deltahome.domain.models.Device
 
 @Composable
-fun WaterMeterCard(device: Device) {
+fun WaterMeterCard(
+    device: Device,
+    onRequestDelete: () -> Unit
+) {
     val field = device.type.fields.firstOrNull()
     val value = field?.lastValue?.valueNumber ?: field?.lastValue?.rawValue ?: "-"
     val unit = field?.unit?.name ?: ""
 
     BaseDeviceCard(
         title = device.name,
-        subtitle = "Water"
+        subtitle = "Water",
+        onLongClick = onRequestDelete
     ) {
         Text(
             text = "Value",

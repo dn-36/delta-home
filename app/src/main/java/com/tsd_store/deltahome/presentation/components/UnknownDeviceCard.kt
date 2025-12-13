@@ -12,12 +12,14 @@ import com.tsd_store.deltahome.domain.models.Device
 @Composable
 fun UnknownDeviceCard(
     device: Device,
-    onClick: () -> Unit
+    onShowDetails: () -> Unit,
+    onRequestDelete: () -> Unit
 ) {
     BaseDeviceCard(
         title = device.name,
         subtitle = device.type.name,
-        onClick = onClick
+        onClick = onShowDetails,
+        onLongClick = onRequestDelete
     ) {
         Text(
             text = "Tap to see details",

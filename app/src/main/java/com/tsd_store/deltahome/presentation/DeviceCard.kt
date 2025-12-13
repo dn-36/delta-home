@@ -30,7 +30,8 @@ fun DeviceCard(
     uiModel: DeviceUiModel,
     onAction: (DevicesAction) -> Unit,
     onShowUnknownDetails: (Device) -> Unit,
-    onShowLightingDialog: (Device) -> Unit
+    onShowLightingDialog: (Device) -> Unit,
+    onRequestDelete: (Device) -> Unit
 ) {
     val device = uiModel.device
     val category = uiModel.category
@@ -38,31 +39,49 @@ fun DeviceCard(
     Box {
         when (category) {
             DeviceCategory.EMERGENCY_SENSOR ->
-                EmergencySensorCard(device)
+                EmergencySensorCard(
+                    device = device,
+                    onRequestDelete = { onRequestDelete(device) } // error
+                )
 
             DeviceCategory.WATER_METER ->
-                WaterMeterCard(device)
+                WaterMeterCard(
+                    device = device,
+                    onRequestDelete = { onRequestDelete(device) } // error
+                )
 
             DeviceCategory.THREE_TARIFF_METER ->
-                ThreeTariffMeterCard(device)
+                ThreeTariffMeterCard(
+                    device = device,
+                    onRequestDelete = { onRequestDelete(device) } // error
+                )
 
             DeviceCategory.COORDINATE_TRACKER ->
-                CoordinateTrackerCard(device)
+                CoordinateTrackerCard(
+                    device = device,
+                    onRequestDelete = { onRequestDelete(device) } // error
+                )
 
             DeviceCategory.CONTROLLED_LIGHTING ->
                 ControlledLightingCard(
                     device = device,
                     onAction = onAction,
-                    onShowDetails = { onShowLightingDialog(device) }
+                    onShowDetails = { onShowLightingDialog(device) },
+                    onRequestDelete = { onRequestDelete(device) }
                 )
 
             DeviceCategory.GATE ->
-                GateCard(device, onAction)
+                GateCard(
+                    device = device,
+                    onAction = onAction,
+                    onRequestDelete = { onRequestDelete(device) } // error
+                )
 
             DeviceCategory.UNKNOWN ->
                 UnknownDeviceCard(
                     device = device,
-                    onClick = { onShowUnknownDetails(device) }
+                    onShowDetails = { onShowUnknownDetails(device) },
+                    onRequestDelete = { onRequestDelete(device) }
                 )
         }
 

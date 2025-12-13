@@ -15,14 +15,16 @@ import com.tsd_store.deltahome.presentation.DevicesAction
 @Composable
 fun GateCard(
     device: Device,
-    onAction: (DevicesAction) -> Unit
+    onAction: (DevicesAction) -> Unit,
+    onRequestDelete: () -> Unit
 ) {
     val boolField = device.type.fields.firstOrNull { it.type == FieldValueType.BOOLEAN }
     val isOpen = boolField?.lastValue?.valueBoolean ?: false
 
     BaseDeviceCard(
         title = device.name,
-        subtitle = "Gate"
+        subtitle = "Gate",
+        onLongClick = onRequestDelete
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically

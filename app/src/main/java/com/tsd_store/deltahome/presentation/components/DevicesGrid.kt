@@ -36,21 +36,46 @@ fun DevicesGrid(
 ) {
     var detailsUnknownDevice by remember { mutableStateOf<Device?>(null) }
     var lightingDevice by remember { mutableStateOf<Device?>(null) }
+    var deviceToDelete by remember { mutableStateOf<Device?>(null) }
+    var showAddDeviceDialog by remember { mutableStateOf(false) }
 
-    // Диалог для UNKNOWN
-    if (detailsUnknownDevice != null) {
+    // Диалог UNKNOWN
+    detailsUnknownDevice?.let { dev ->
         UnknownDeviceDetailsDialog(
-            device = detailsUnknownDevice!!,
+            device = dev,
             onDismiss = { detailsUnknownDevice = null }
         )
     }
 
-    // Диалог для света
-    if (lightingDevice != null) {
+    // Диалог света
+    lightingDevice?.let { dev ->
         LightingControlDialog(
-            device = lightingDevice!!,
+            device = dev,
             onDismiss = { lightingDevice = null },
             onAction = onAction
+        )
+    }
+
+    // Диалог удаления
+    deviceToDelete?.let { dev ->
+        DeleteDeviceDialog(
+            device = dev,
+            onDismiss = { deviceToDelete = null },
+            onConfirm = {
+                onAction(DevicesAction.RemoveDeviceConfirm(dev.id))
+                deviceToDelete = null
+            }
+        )
+    }
+
+    // Диалог добавления
+    if (showAddDeviceDialog) {
+        AddDeviceDialog(
+            onDismiss = { showAddDeviceDialog = false },
+            onConfirm = { category, name ->
+                onAction(DevicesAction.AddDeviceConfirm(category, name))
+                showAddDeviceDialog = false
+            }
         )
     }
 
@@ -72,16 +97,23 @@ fun DevicesGrid(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            items(devices, key = { it.device.id }) { uiModel ->
+            items(
+                items = devices,
+                key = { uiModel: DeviceUiModel -> uiModel.device.id }
+            ) { uiModel ->
                 DeviceCard(
                     uiModel = uiModel,
                     onAction = onAction,
-                    onShowUnknownDetails = { device ->
-                        detailsUnknownDevice = device
-                    },
-                    onShowLightingDialog = { device ->
-                        lightingDevice = device
-                    }
+                    onShowUnknownDetails = { detailsUnknownDevice = it },
+                    onShowLightingDialog = { lightingDevice = it },
+                    onRequestDelete = { deviceToDelete = it }
+                )
+            }
+
+            // "+" карточка
+            item {
+                AddDeviceCard(
+                    onClick = { showAddDeviceDialog = true }
                 )
             }
         }
@@ -117,14 +149,11 @@ fun UnknownDeviceDetailsDialog(
 
                         val unit = field.unit?.name?.let { " $it" } ?: ""
 
-                        // field name (smaller font)
                         Text(
                             text = field.name,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                         )
-
-                        // field value (bigger font)
                         Text(
                             text = value + unit,
                             style = MaterialTheme.typography.titleMedium

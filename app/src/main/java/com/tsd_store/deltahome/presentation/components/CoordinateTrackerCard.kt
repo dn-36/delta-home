@@ -6,7 +6,10 @@ import androidx.compose.runtime.Composable
 import com.tsd_store.deltahome.domain.models.Device
 
 @Composable
-fun CoordinateTrackerCard(device: Device) {
+fun CoordinateTrackerCard(
+    device: Device,
+    onRequestDelete: () -> Unit
+) {
     val latField = device.type.fields.getOrNull(0)
     val lonField = device.type.fields.getOrNull(1)
 
@@ -15,7 +18,8 @@ fun CoordinateTrackerCard(device: Device) {
 
     BaseDeviceCard(
         title = device.name,
-        subtitle = "Location"
+        subtitle = "Location",
+        onLongClick = onRequestDelete
     ) {
         Text(
             text = "Coords",

@@ -1,18 +1,17 @@
-package com.tsd_store.deltahome.data.remote.actual_remote.sensors_client
+package com.tsd_store.deltahome.data.remote.sensors_client
 
 import com.tsd_store.deltahome.common.network.NetworkError
 import com.tsd_store.deltahome.common.network.ResultNetwork
 import com.tsd_store.deltahome.common.network.makeRequest
 import com.tsd_store.deltahome.common.network.onSuccess
 import com.tsd_store.deltahome.data.remote.NetworkClient
-import com.tsd_store.deltahome.data.remote.actual_remote.models.CreateSensorRequestModel
-import com.tsd_store.deltahome.data.remote.actual_remote.models.DevicesResponse
-import com.tsd_store.deltahome.data.remote.actual_remote.models.SendAlarmSensorRequestModel
-import com.tsd_store.deltahome.data.remote.actual_remote.models.SendStatusSensorRequestModel
-import com.tsd_store.deltahome.data.remote.actual_remote.models.SendValueSensorRequestModel
-import com.tsd_store.deltahome.data.remote.actual_remote.models.ValueSensorResponse
+import com.tsd_store.deltahome.data.remote.sensors_client.models.CreateSensorRequestModel
+import com.tsd_store.deltahome.data.remote.sensors_client.models.DevicesResponse
+import com.tsd_store.deltahome.data.remote.sensors_client.models.SendAlarmSensorRequestModel
+import com.tsd_store.deltahome.data.remote.sensors_client.models.SendStatusSensorRequestModel
+import com.tsd_store.deltahome.data.remote.sensors_client.models.SendValueSensorRequestModel
+import com.tsd_store.deltahome.data.remote.sensors_client.models.ValueSensorResponse
 import io.ktor.http.HttpMethod
-import kotlinx.serialization.Serializable
 
 class SensorsClient {
 

@@ -18,7 +18,7 @@ class DevicesScreen : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: DevicesViewModel = remember { DevicesViewModel(getKoin().get()) }
+        val viewModel: DevicesViewModel = remember { getKoin().get()}
 
         val state by viewModel.state.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }

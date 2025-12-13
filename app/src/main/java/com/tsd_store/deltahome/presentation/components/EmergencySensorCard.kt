@@ -9,12 +9,16 @@ import com.tsd_store.deltahome.domain.models.Device
 
 
 @Composable
-fun EmergencySensorCard(device: Device) {
+fun EmergencySensorCard(
+    device: Device,
+    onRequestDelete: () -> Unit
+) {
     val hasAlarm = device.alarm != "no" && device.alarm != "0"
 
     BaseDeviceCard(
         title = device.name,
-        subtitle = device.type.name
+        subtitle = device.type.name,
+        onLongClick = onRequestDelete
     ) {
         Text(
             text = "Alarm",
